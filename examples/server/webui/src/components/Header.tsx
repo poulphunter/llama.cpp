@@ -5,7 +5,8 @@ import { classNames, isBoolean, isNumeric, isString } from '../utils/misc';
 import daisyuiThemes from 'daisyui/src/theming/themes';
 import { THEMES, CONFIG_DEFAULT, isDev } from '../Config';
 import { useNavigate } from 'react-router';
-
+import { useTranslation } from 'react-i18next';
+import LanguageSelector from './LanguageSelector.tsx';
 export const PROMPT_JSON = [
   {
     name: '',
@@ -15,6 +16,7 @@ export const PROMPT_JSON = [
 ];
 
 export default function Header() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [selectedTheme, setSelectedTheme] = useState(StorageUtils.getTheme());
   const { setShowSettings } = useAppContext();
@@ -64,7 +66,7 @@ export default function Header() {
   const removeConversation = () => {
     if (isCurrConvGenerating || !viewingChat) return;
     const convId = viewingChat?.conv.id;
-    if (window.confirm('Are you sure to delete this conversation?')) {
+    if (window.confirm(t('conversations.deleteConfirm'))) {
       StorageUtils.remove(convId);
       navigate('/');
     }
@@ -238,7 +240,6 @@ export default function Header() {
             </svg>
           </button>
         </div>
-
         {/* theme controller is copied from https://daisyui.com/components/theme-controller/ */}
         <div className="tooltip tooltip-bottom" data-tip="Themes">
           <div className="dropdown dropdown-end dropdown-bottom">
@@ -285,6 +286,7 @@ export default function Header() {
             </ul>
           </div>
         </div>
+        <LanguageSelector></LanguageSelector>
       </div>
     </div>
   );
