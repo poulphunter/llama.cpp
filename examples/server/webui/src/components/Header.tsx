@@ -7,7 +7,8 @@ import { THEMES, CONFIG_DEFAULT, isDev } from '../Config';
 import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import LanguageSelector from './LanguageSelector.tsx';
-export const PROMPT_JSON = [
+
+const PROMPT_JSON = [
   {
     name: '',
     lang: '',
