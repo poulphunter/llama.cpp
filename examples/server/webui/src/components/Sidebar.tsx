@@ -64,7 +64,15 @@ export default function Sidebar() {
               'btn btn-ghost justify-start': true,
               'btn-active': !currConv,
             })}
-            onClick={() => navigate('/')}
+            onClick={() => {
+              navigate('/');
+              const elem = document.getElementById(
+                'toggle-drawer'
+              ) as HTMLInputElement;
+              if (elem && elem.checked) {
+                elem.click();
+              }
+            }}
           >
             + New conversation
           </div>
@@ -75,7 +83,15 @@ export default function Sidebar() {
                 'btn btn-ghost justify-start font-normal': true,
                 'btn-active': conv.id === currConv?.id,
               })}
-              onClick={() => navigate(`/chat/${conv.id}`)}
+              onClick={() => {
+                navigate(`/chat/${conv.id}`);
+                const elem = document.getElementById(
+                  'toggle-drawer'
+                ) as HTMLInputElement;
+                if (elem && elem.checked) {
+                  elem.click();
+                }
+              }}
               dir="auto"
             >
               <span className="truncate">{conv.name}</span>
