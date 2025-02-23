@@ -35,11 +35,18 @@ function AppLayout() {
         <Outlet />
       </div>
       {
-        <SettingDialog
-          key={settingsSeed}
-          show={showSettings}
-          onClose={() => setShowSettings(false)}
-        />
+        <>
+          <button
+            type="button"
+            id="dropdown-close-helper"
+            className="h-0 w-0"
+          />
+          <SettingDialog
+            key={settingsSeed}
+            show={showSettings}
+            onClose={() => setShowSettings(false)}
+          />
+        </>
       }
     </>
   );

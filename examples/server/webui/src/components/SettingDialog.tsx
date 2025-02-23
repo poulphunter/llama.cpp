@@ -267,6 +267,7 @@ export default function SettingDialog({
 }) {
   const { config, saveConfig } = useAppContext();
   const [sectionIdx, setSectionIdx] = useState(0);
+  const { closeDropDownMenu } = useAppContext();
 
   // clone the config object to prevent direct mutation
   const [localConfig, setLocalConfig] = useState<typeof CONFIG_DEFAULT>(
@@ -348,7 +349,7 @@ export default function SettingDialog({
 
           {/* Left panel, showing sections - Mobile version */}
           <div className="md:hidden flex flex-row gap-2 mb-4">
-            <details className="dropdown">
+            <details className="dropdown" id="settingDialogDropdown">
               <summary className="btn bt-sm w-full m-1">
                 {SETTING_SECTIONS[sectionIdx].title}
               </summary>
@@ -360,7 +361,10 @@ export default function SettingDialog({
                       'btn btn-ghost justify-start font-normal': true,
                       'btn-active': sectionIdx === idx,
                     })}
-                    onClick={() => setSectionIdx(idx)}
+                    onClick={() => {
+                      closeDropDownMenu('settingDialogDropdown');
+                      setSectionIdx(idx);
+                    }}
                     dir="auto"
                   >
                     {section.title}

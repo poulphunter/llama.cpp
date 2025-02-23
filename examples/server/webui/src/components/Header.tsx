@@ -19,16 +19,8 @@ export default function Header() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [selectedTheme, setSelectedTheme] = useState(StorageUtils.getTheme());
-  const { setShowSettings } = useAppContext();
+  const { setShowSettings, closeDropDownMenu } = useAppContext();
   const [selectedConfig, setSelectedConfig] = useState<number>(-1);
-  const handleClick = () => {
-    const elem = document.activeElement;
-    if (elem) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
-      elem?.blur();
-    }
-  };
 
   const setTheme = (theme: string) => {
     StorageUtils.setTheme(theme);
@@ -267,7 +259,9 @@ export default function Header() {
                       onChange={(e) =>
                         e.target.checked && selectPrompt(opt.key)
                       }
-                      onClick={handleClick}
+                      onClick={() => {
+                        closeDropDownMenu('');
+                      }}
                     />
                   </li>
                 ))}

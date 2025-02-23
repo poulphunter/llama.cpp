@@ -48,6 +48,7 @@ interface AppContextValue {
   settingsSeed: number;
   setShowSettings: (show: boolean) => void;
   resetSettings: () => void;
+  closeDropDownMenu: (e: string) => void;
 }
 
 // this callback is used for scrolling to the bottom of the chat and switching to the last node
@@ -368,6 +369,20 @@ export const AppContextProvider = ({
     setConfig(config);
   };
 
+  const closeDropDownMenu = (e: string) => {
+    // if we specify the dropdown ID we can remove "open" attribute
+    if (typeof e === 'string') {
+      const elem = document.getElementById(e);
+      if (elem) {
+        elem.removeAttribute('open');
+      }
+    }
+    // used for some dropdown menu, focus elsewhere
+    document
+      .getElementById('dropdown-close-helper')
+      ?.focus({ preventScroll: true });
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -385,6 +400,7 @@ export const AppContextProvider = ({
         setShowSettings,
         settingsSeed,
         resetSettings,
+        closeDropDownMenu,
       }}
     >
       {children}

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import i18next from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { isDev } from '../Config.ts';
+import { useAppContext } from '../utils/app.context.tsx';
 
 type languageOption = { language: string; code: string };
 
@@ -16,6 +17,7 @@ const languageOptions: languageOption[] = [
 const LanguageSelector = () => {
   const [lang, setLanguage] = useState(i18next.language);
   const { i18n } = useTranslation();
+  const { closeDropDownMenu } = useAppContext();
   if (isDev) {
     console.log(lang);
   }
@@ -55,6 +57,9 @@ const LanguageSelector = () => {
                 onChange={() => {
                   setLanguage(code);
                   i18next.changeLanguage(code);
+                }}
+                onClick={() => {
+                  closeDropDownMenu('');
                 }}
               />
             </li>
