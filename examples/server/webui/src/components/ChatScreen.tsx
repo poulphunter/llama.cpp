@@ -6,6 +6,7 @@ import { classNames, throttle } from '../utils/misc';
 import CanvasPyInterpreter from './CanvasPyInterpreter';
 import StorageUtils from '../utils/storage';
 import { useVSCodeContext } from '../utils/llama-vscode';
+import { useTranslation } from 'react-i18next';
 
 /**
  * A message display is a message node with additional information for rendering.
@@ -80,6 +81,7 @@ export default function ChatScreen() {
     canvasData,
     replaceMessageAndGenerate,
   } = useAppContext();
+  const { t } = useTranslation();
   const [inputMsg, setInputMsg] = useState('');
   const [automaticSend, setAutomaticSend] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -244,7 +246,7 @@ export default function ChatScreen() {
             <div className="flex items-center text-center sm:text-left align-middle h-full mx-auto">
               {config.questionIdeas.length > 0 ? (
                 <div className="w-full text-center">
-                  <div className="">Here are some suggestions for you:</div>
+                  <div className="">{t('ChatScreen.suggestions')}</div>
                   <div className="grid grid-cols-1 sm:grid-cols-3">
                     {[...config.questionIdeas].map((idea: string, index) => (
                       <button
@@ -260,10 +262,10 @@ export default function ChatScreen() {
                       </button>
                     ))}
                   </div>
-                  <div className="">Send a message to start</div>
+                  <div className="">{t('ChatScreen.sendMsgStart')}</div>
                 </div>
               ) : (
-                <div className="">Send a message to start</div>
+                <div className="">{t('ChatScreen.sendMsgStart')}</div>
               )}
             </div>
           )}
@@ -284,7 +286,7 @@ export default function ChatScreen() {
         <div className="flex flex-row items-center pt-8 pb-6 sticky bottom-0 bg-base-100">
           <textarea
             className="textarea textarea-bordered w-full"
-            placeholder="Type a message (Shift+Enter to add a new line)"
+            placeholder={t('ChatScreen.textAreaPlaceHolder')}
             ref={inputRef}
             value={inputMsg}
             onChange={(e) => setInputMsg(e.target.value)}
@@ -304,7 +306,7 @@ export default function ChatScreen() {
               className="btn btn-neutral ml-2"
               onClick={() => stopGenerating(currConvId ?? '')}
             >
-              Stop
+              {t('ChatScreen.stopBtn')}
             </button>
           ) : (
             <button
@@ -312,7 +314,7 @@ export default function ChatScreen() {
               onClick={sendNewMessage}
               disabled={inputMsg.trim().length === 0}
             >
-              Send
+              {t('ChatScreen.sendBtn')}
             </button>
           )}
         </div>

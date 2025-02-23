@@ -3,8 +3,10 @@ import { classNames } from '../utils/misc';
 import { Conversation } from '../utils/types';
 import StorageUtils from '../utils/storage';
 import { useNavigate, useParams } from 'react-router';
+import { useTranslation } from 'react-i18next';
 
 export default function Sidebar() {
+  const { t } = useTranslation();
   const params = useParams();
   const navigate = useNavigate();
 
@@ -33,12 +35,12 @@ export default function Sidebar() {
       <div className="drawer-side h-screen lg:h-screen z-50 lg:max-w-64">
         <label
           htmlFor="toggle-drawer"
-          aria-label="close sidebar"
+          aria-label={t('Sidebar.sidebarClose')}
           className="drawer-overlay"
         ></label>
         <div className="flex flex-col bg-base-200 min-h-full max-w-64 py-4 px-4">
           <div className="flex flex-row items-center justify-between mb-4 mt-4">
-            <h2 className="font-bold ml-4">Conversations</h2>
+            <h2 className="font-bold ml-4">{t('Sidebar.Conversations')}</h2>
 
             {/* close sidebar button */}
             <label htmlFor="toggle-drawer" className="btn btn-ghost lg:hidden">
@@ -74,7 +76,7 @@ export default function Sidebar() {
               }
             }}
           >
-            + New conversation
+            {t('Sidebar.newConversation')}
           </div>
           {conversations.map((conv) => (
             <div
@@ -98,7 +100,7 @@ export default function Sidebar() {
             </div>
           ))}
           <div className="text-center text-xs opacity-40 mt-auto mx-4">
-            Conversations are saved to browser's IndexedDB
+            {t('Sidebar.convInformation')}
           </div>
         </div>
       </div>

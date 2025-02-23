@@ -8,17 +8,46 @@
     "tooltipLanguage": "Langue",
     "manualSettings": "Configuration manuelle"
   },
+  "Sidebar": {
+    "Conversations": "Conversations",
+    "sidebarClose": "Fermer le panneau latéral",
+    "newConversation": "+ Nouvelle conversation",
+    "convInformation": "Les conversations sont enregistrées dans l'IndexedDB du navigateur"
+  },
+  "ChatScreen": {
+    "suggestions": "Voici quelques examples :",
+    "sendMsgStart": "Envoyez un message pour commencer la discussion",
+    "textAreaPlaceHolder": "Tappez un message (Shift+Entrer pour ajouter une nouvelle ligne)",
+    "stopBtn": "Arreter",
+    "sendBtn": "Envoyer"
+  },
+  "ChatMessage": {
+    "Time": "Temps",
+    "Speed": "Vitesse",
+    "Tokens": "Jetons",
+    "Cancel": "Annuler",
+    "Submit": "Envoyer",
+    "Edit": "✍\uFE0F Editer",
+    "Regenerate": "\uD83D\uDD04 Régénérer",
+    "Thinking": "En train de réfléchir",
+    "ThoughtProcess": "Processus de réflexion",
+    "ExtraContent": "Contenu supplémentaire"
+  },
+  "MarkdownDisplay": {
+    "copied": "Copié !",
+    "copy": "\uD83D\uDCCB Copier"
+  },
   "config": {
     "meaning": {
-      "apiKey": "Set the API Key if you are using --api-key option for the server.",
-      "systemMessage": "The starting message that defines how model should behave.",
-      "samplers": "The order at which samplers are applied, in simplified way. Default is 'dkypmxt' : dry->top_k->typ_p->top_p->min_p->xtc->temperature",
-      "temperature": "Controls the randomness of the generated text by affecting the probability distribution of the output tokens. Higher = more random, lower = more focused.",
-      "dynatemp_range": "Addon for the temperature sampler. The added value to the range of dynamic temperature, which adjusts probabilities by entropy of tokens.",
-      "dynatemp_exponent": "Addon for the temperature sampler. Smoothes out the probability redistribution based on the most probable token.",
-      "top_k": "Keeps only k top tokens.",
-      "top_p": "Limits tokens to those that together have a cumulative probability of at least p",
-      "min_p": "Limits tokens based on the minimum probability for a token to be considered, relative to the probability of the most likely token.",
+      "apiKey": "Définissez la clé API si vous utilisez l’option --api-key pour le serveur.",
+      "systemMessage": "Le message de départ qui définit comment le modèle doit se comporter.",
+      "samplers": "L'ordre dans lequel les 'samplers' sont appliqués, de manière simplifiée. La valeur par défaut est 'dkypmxt' : dry->top_k->typ_p->top_p->min_p->xtc->temperature",
+      "temperature": "Contrôle le caractère aléatoire du texte généré en affectant la distribution de probabilité des jetons de sortie. Plus élevé = plus aléatoire, plus bas = plus ciblé.",
+      "dynatemp_range": "Addon pour l'échantillonneur de température. La valeur ajoutée à la plage de température dynamique, qui ajuste les probabilités par l'entropie des jetons.",
+      "dynatemp_exponent": "Addon pour l'échantillonneur de température. Lisse la redistribution de probabilité en fonction du jeton le plus probable.",
+      "top_k": "Conserve uniquement les k meilleurs jetons.",
+      "top_p": "Limite les jetons à ceux qui ont ensemble une probabilité cumulative d'au moins p",
+      "min_p": "Limite les jetons en fonction de la probabilité minimale pour qu'un jeton soit pris en compte, par rapport à la probabilité du jeton le plus probable.",
       "xtc_probability": "XTC sampler cuts out top tokens; this parameter controls the chance of cutting tokens at all. 0 disables XTC.",
       "xtc_threshold": "XTC sampler cuts out top tokens; this parameter controls the token probability that is required to cut that token.",
       "typical_p": "Sorts and limits tokens based on the difference between log-probability and entropy.",

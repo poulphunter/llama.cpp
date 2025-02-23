@@ -8,6 +8,35 @@
     "tooltipLanguage": "Language",
     "manualSettings": "Manual settings"
   },
+  "Sidebar": {
+    "Conversations": "Conversations",
+    "sidebarClose": "close sidebar",
+    "newConversation": "+ New conversation",
+    "convInformation": "Conversations are saved to browser's IndexedDB"
+  },
+  "ChatScreen": {
+    "suggestions": "Here are some suggestions for you:",
+    "sendMsgStart": "Send a message to start",
+    "textAreaPlaceHolder": "Type a message (Shift+Enter to add a new line)",
+    "stopBtn": "Stop",
+    "sendBtn": "Send"
+  },
+  "ChatMessage": {
+    "Time": "Time",
+    "Speed": "Speed",
+    "Tokens": "Tokens",
+    "Cancel": "Cancel",
+    "Submit": "Submit",
+    "Edit": "✍\uFE0F Edit",
+    "Regenerate": "\uD83D\uDD04 Regenerate",
+    "Thinking": "Thinking",
+    "ThoughtProcess": "Thought Process",
+    "ExtraContent": "Extra content"
+  },
+  "MarkdownDisplay": {
+    "copied": "Copied!",
+    "copy": "\uD83D\uDCCB Copy"
+  },
   "config": {
     "meaning": {
       "apiKey": "Set the API Key if you are using --api-key option for the server.",
