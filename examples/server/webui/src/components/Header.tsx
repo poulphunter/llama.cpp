@@ -149,6 +149,10 @@ export default function Header() {
 
   const selectPrompt = (value: number) => {
     setSelectedConfig(value);
+    if (value === -1) {
+      resetSettings();
+      return;
+    }
     if (
       promptSelectConfig &&
       promptSelectConfig[value] &&
@@ -304,7 +308,8 @@ export default function Header() {
                     className="theme-controller btn btn-sm btn-block btn-ghost justify-start"
                     aria-label={t('Header.manualSettings')}
                     value={t('Header.manualSettings')}
-                    onChange={() => setShowSettings(true)}
+                    onClick={() => setShowSettings(true)}
+                    onChange={(e) => e.target.checked && selectPrompt(-1)}
                   />
                 </li>
                 {[...promptSelectOptions].map((opt) => (
@@ -454,6 +459,9 @@ export default function Header() {
                               }
                             }
                           );
+                          if (!firstConfigSet) {
+                            saveConfig(CONFIG_DEFAULT);
+                          }
                         }
                         resetSettings();
                         setPromptSelectOptions(prt);
