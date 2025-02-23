@@ -1,0 +1,65 @@
+{
+  "Header": {
+    "deleteConfirm": "Möchten Sie diese Konversation wirklich löschen?",
+    "downloadBtn": "Herunterladen",
+    "deleteBtn": "Löschen",
+    "tooltipSettings": "Einstellungen",
+    "tooltipTheme": "Design",
+    "tooltipLanguage": "Sprache",
+    "manualSettings": "Manuelle Einstellungen"
+  },
+  "Sidebar": {
+    "Conversations": "Konversationen",
+    "sidebarClose": "Seitenleiste schließen",
+    "newConversation": "+ Neue Konversation",
+    "convInformation": "Konversationen werden in der IndexedDB des Browsers gespeichert"
+  },
+  "ChatScreen": {
+    "suggestions": "Hier sind einige Vorschläge für Sie:",
+    "sendMsgStart": "Senden Sie eine Nachricht, um zu beginnen",
+    "textAreaPlaceHolder": "Geben Sie eine Nachricht ein (Umschalt+Eingabe, um eine neue Zeile hinzuzufügen)",
+    "stopBtn": "Stopp",
+    "sendBtn": "Senden"
+  },
+  "ChatMessage": {
+    "Time": "Zeit",
+    "Speed": "Geschwindigkeit",
+    "Tokens": "Tokens",
+    "Cancel": "Abbrechen",
+    "Submit": "Senden",
+    "Edit": "✍\uFE0F Bearbeiten",
+    "Regenerate": "\uD83D\uDD04 Regenerieren",
+    "Thinking": "Denken",
+    "ThoughtProcess": "Gedankenprozess",
+    "ExtraContent": "Zusätzlicher Inhalt"
+  },
+  "MarkdownDisplay": {
+    "copied": "Kopiert!",
+    "copy": "\uD83D\uDCCB Kopieren"
+  },
+  "config": {
+    "meaning": {
+      "apiKey": "Legen Sie den API-Schlüssel fest, wenn Sie die Option --api-key für den Server verwenden.",
+      "systemMessage": "Die Startnachricht, die definiert, wie sich das Modell verhalten soll.",
+      "samplers": "Die Reihenfolge, in der Sampler angewendet werden, vereinfacht dargestellt. Standard ist 'dkypmxt': dry->top_k->typ_p->top_p->min_p->xtc->temperature",
+      "temperature": "Steuert die Zufälligkeit des generierten Textes, indem die Wahrscheinlichkeitsverteilung der Ausgabetoken beeinflusst wird. Höher = zufälliger, niedriger = fokussierter.",
+      "dynatemp_range": "Addon für den Temperatursampler. Der hinzugefügte Wert zum Bereich der dynamischen Temperatur, der die Wahrscheinlichkeiten durch die Entropie der Token anpasst.",
+      "dynatemp_exponent": "Addon für den Temperatursampler. Glättet die Wahrscheinlichkeitsumverteilung basierend auf dem wahrscheinlichsten Token.",
+      "top_k": "Behält nur k Top-Token.",
+      "top_p": "Beschränkt Token auf diejenigen, die zusammen eine kumulative Wahrscheinlichkeit von mindestens p haben",
+      "min_p": "Beschränkt Token basierend auf der Mindestwahrscheinlichkeit, mit der ein Token berücksichtigt wird, relativ zur Wahrscheinlichkeit des wahrscheinlichsten Tokens.",
+      "xtc_probability": "XTC-Sampler schneidet Top-Token aus; dieser Parameter steuert die Wahrscheinlichkeit, überhaupt Token auszuschneiden. 0 deaktiviert XTC.",
+      "xtc_threshold": "XTC-Sampler schneidet Top-Token aus; dieser Parameter steuert die Tokenwahrscheinlichkeit, die zum Ausschneiden dieses Tokens erforderlich ist.",
+      "typical_p": "Sortiert und begrenzt Token basierend auf der Differenz zwischen Log-Wahrscheinlichkeit und Entropie.",
+      "repeat_last_n": "Letzte n Token, die zur Bestrafung von Wiederholungen berücksichtigt werden sollen",
+      "repeat_penalty": "Steuert die Wiederholung von Tokensequenzen im generierten Text",
+      "presence_penalty": "Begrenzt Token basierend darauf, ob sie in der Ausgabe erscheinen oder nicht.",
+      "frequency_penalty": "Begrenzt Token basierend darauf, wie oft sie in der Ausgabe erscheinen.",
+      "dry_multiplier": "DRY-Sampling reduziert Wiederholungen im generierten Text sogar über lange Kontexte hinweg. Dieser Parameter legt den DRY-Sampling-Multiplikator fest.",
+      "dry_base": "DRY-Sampling reduziert Wiederholungen im generierten Text sogar über lange Kontexte hinweg. Dieser Parameter legt den DRY-Sampling-Basiswert fest.",
+      "dry_allowed_length": "DRY-Sampling reduziert Wiederholungen im generierten Text sogar über lange Kontexte hinweg. Dieser Parameter legt die zulässige Länge für DRY-Sampling fest.",
+      "dry_penalty_last_n": "DRY-Sampling reduziert Wiederholungen im generierten Text auch in langen Kontexten. Dieser Parameter legt die DRY-Strafe für die letzten n Token fest.",
+      "max_tokens": "Die maximale Anzahl von Token pro Ausgabe."
+    }
+  }
+}

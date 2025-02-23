@@ -12,11 +12,13 @@ import useStateCallback from '../utils/UseStateCallback.tsx';
 type languageOption = { language: string; code: string };
 
 const languageOptions: languageOption[] = [
+  { language: 'Chinese', code: 'cn' },
   { language: 'English', code: 'en' },
   { language: 'French', code: 'fr' },
   { language: 'German', code: 'de' },
-  { language: 'Spanish', code: 'es' },
   { language: 'Italian', code: 'it' },
+  { language: 'Russian', code: 'ru' },
+  { language: 'Spanish', code: 'es' },
 ];
 
 const PROMPT_JSON = [

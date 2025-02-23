@@ -1,0 +1,65 @@
+{
+  "Header": {
+    "deleteConfirm": "¿Está seguro de eliminar esta conversación?",
+    "downloadBtn": "Descargar",
+    "deleteBtn": "Eliminar",
+    "tooltipSettings": "Configuración",
+    "tooltipTheme": "Tema",
+    "tooltipLanguage": "Idioma",
+    "manualSettings": "Configuración manual"
+  },
+  "Sidebar": {
+    "Conversations": "Conversaciones",
+    "sidebarClose": "Cerrar barra lateral",
+    "newConversation": "+ Nueva conversación",
+    "convInformation": "Las conversaciones se guardan en la base de datos indexada del navegador"
+  },
+  "ChatScreen": {
+    "suggestions": "A continuación, se incluyen algunas sugerencias:",
+    "sendMsgStart": "Enviar un mensaje para comenzar",
+    "textAreaPlaceHolder": "Escribir un mensaje (Shift+Enter para agregar una nueva línea)",
+    "stopBtn": "Detener",
+    "sendBtn": "Enviar"
+  },
+  "ChatMessage": {
+    "Time": "Tiempo",
+    "Speed": "Velocidad",
+    "Tokens": "Tokens",
+    "Cancel": "Cancelar",
+    "Submit": "Enviar",
+    "Edit": "✍\uFE0F Editar",
+    "Regenerate": "\uD83D\uDD04 Regenerar",
+    "Thinking": "Pensando",
+    "ThoughtProcess": "Proceso de pensamiento",
+    "ExtraContent": "Contenido adicional"
+  },
+  "MarkdownDisplay": {
+    "copied": "¡Copiado!",
+    "copy": "\uD83D\uDCCB Copiar"
+  },
+  "config": {
+    "meaning": {
+      "apiKey": "Establezca la clave API si está usando la opción --api-key para el servidor.",
+      "systemMessage": "La mensaje de inicio que define cómo debe comportarse el modelo.",
+      "samplers": "El orden en el que se aplican los muestreadores, de forma simplificada. El valor predeterminado es 'dkypmxt' : dry->top_k->typ_p->top_p->min_p->xtc->temperature",
+      "temperature": "Controla la aleatoriedad del texto generado al afectar la distribución de probabilidad de los tokens de salida. Cuanto mayor sea el valor, más aleatorio; menor será el valor, más centrado.",
+      "dynatemp_range": "Complemento para el muestreador de temperatura. El valor agregado al rango de temperatura dinámica, que ajusta las probabilidades por entropía de los tokens.",
+      "dynatemp_exponent": "Complemento para el muestreador de temperatura. Suaviza la redistribución de probabilidad en función del token más probable.",
+      "top_k": "Mantiene solo k tokens superiores.",
+      "top_p": "Limita los tokens a aquellos que juntos tienen una probabilidad acumulada de al menos p",
+      "min_p": "Limita los tokens en función de la probabilidad mínima de que se considere un token, en relación con la probabilidad del token más probable.",
+      "xtc_probability": "El muestreador XTC elimina los tokens superiores; este parámetro controla la probabilidad de eliminar tokens. 0 deshabilita XTC.",
+      "xtc_threshold": "El muestreador XTC elimina los tokens superiores; Este parámetro controla la probabilidad de token que se requiere para cortar ese token.",
+      "typical_p": "Ordena y limita los tokens según la diferencia entre probabilidad logarítmica y entropía.",
+      "repeat_last_n": "Últimos n tokens a considerar para penalizar la repetición",
+      "repeat_penalty": "Controla la repetición de secuencias de tokens en el texto generado",
+      "presence_penalty": "Limita los tokens según si aparecen o no en la salida.",
+      "frequency_penalty": "Limita los tokens según la frecuencia con la que aparecen en la salida.",
+      "dry_multiplier": "El muestreo DRY reduce la repetición en el texto generado incluso en contextos largos. Este parámetro establece el multiplicador de muestreo DRY.",
+      "dry_base": "El muestreo DRY reduce la repetición en el texto generado incluso en contextos largos. Este parámetro establece el valor base de muestreo DRY.",
+      "dry_allowed_length": "El muestreo DRY reduce la repetición en el texto generado incluso en contextos largos. Este parámetro establece la longitud permitida para el muestreo DRY.",
+      "dry_penalty_last_n": "El muestreo DRY reduce la repetición en el texto generado incluso en contextos largos. Este parámetro establece la penalización DRY para los últimos n tokens.",
+      "max_tokens": "La cantidad máxima de tokens por salida."
+    }
+  }
+}
