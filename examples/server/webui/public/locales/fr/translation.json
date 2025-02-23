@@ -1,7 +1,12 @@
 {
-  "conversations": {
+  "Header": {
     "deleteConfirm": "Etes vous certain de vouloir supprimer cette conversation ?",
-    "deleteBtn": "Supprimer"
+    "downloadBtn": "Télécharger",
+    "deleteBtn": "Supprimer",
+    "tooltipSettings": "Configuration",
+    "tooltipTheme": "Theme",
+    "tooltipLanguage": "Langue",
+    "manualSettings": "Configuration manuelle"
   },
   "config": {
     "meaning": {
