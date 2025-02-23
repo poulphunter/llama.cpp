@@ -21,6 +21,14 @@ export default function Header() {
   const [selectedTheme, setSelectedTheme] = useState(StorageUtils.getTheme());
   const { setShowSettings } = useAppContext();
   const [selectedConfig, setSelectedConfig] = useState<number>(-1);
+  const handleClick = () => {
+    const elem = document.activeElement;
+    if (elem) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      elem?.blur();
+    }
+  };
 
   const setTheme = (theme: string) => {
     StorageUtils.setTheme(theme);
@@ -237,6 +245,16 @@ export default function Header() {
                 tabIndex={0}
                 className="dropdown-content bg-base-300 rounded-box z-[1] w-52 p-2 shadow-2xl h-80 overflow-y-auto"
               >
+                <li>
+                  <input
+                    type="radio"
+                    name="settings"
+                    className="theme-controller btn btn-sm btn-block btn-ghost justify-start"
+                    aria-label="Manual settings"
+                    value="Manual settings"
+                    onChange={() => setShowSettings(true)}
+                  />
+                </li>
                 {[...promptSelectOptions].map((opt) => (
                   <li key={opt.key}>
                     <input
@@ -249,6 +267,7 @@ export default function Header() {
                       onChange={(e) =>
                         e.target.checked && selectPrompt(opt.key)
                       }
+                      onClick={handleClick}
                     />
                   </li>
                 ))}
