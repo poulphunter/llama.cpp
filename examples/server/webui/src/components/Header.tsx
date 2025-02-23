@@ -7,6 +7,7 @@ import { THEMES, CONFIG_DEFAULT, isDev } from '../Config';
 import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import i18next from 'i18next';
+import useStateCallback from '../utils/UseStateCallback.tsx';
 
 type languageOption = { language: string; code: string };
 
@@ -27,10 +28,10 @@ const PROMPT_JSON = [
 ];
 
 export default function Header() {
-  const [lang, setLanguage] = useState(i18next.language);
+  const [lang, setLanguage] = useStateCallback(i18next.language);
   const { t, i18n } = useTranslation();
   if (isDev) {
-    console.log(lang);
+    console.log('Language:' + lang);
   }
   useEffect(() => {
     document.body.dir = i18n.dir();
@@ -44,11 +45,7 @@ export default function Header() {
     StorageUtils.setTheme(theme);
     setSelectedTheme(theme);
   };
-  const { config, saveConfig, resetSettings } = useAppContext();
-  // clone the config object to prevent direct mutation
-  const [localConfig] = useState<typeof CONFIG_DEFAULT>(
-    JSON.parse(JSON.stringify(config))
-  );
+  const { saveConfig, resetSettings } = useAppContext();
 
   const [promptSelectOptions, setPromptSelectOptions] = useState<
     { key: number; value: string }[]
@@ -56,6 +53,8 @@ export default function Header() {
   const [promptSelectConfig, setPromptSelectConfig] = useState<
     typeof PROMPT_JSON | null
   >(null);
+  const [promptSelectFirstConfig, setPromptSelectFirstConfig] =
+    useState<number>(-1);
   const [selectedConfig, setSelectedConfig] = useState<number>(-1);
   useEffect(() => {
     document.body.setAttribute('data-theme', selectedTheme);
@@ -73,9 +72,13 @@ export default function Header() {
         const prt: { key: number; value: string }[] = [];
         if (data && data.prompts) {
           setPromptSelectConfig(data.prompts);
+          let firstConfigSet = false;
           Object.keys(data.prompts).forEach(function (key) {
-            console.log(lang);
             if (lang == data.prompts[key].lang) {
+              if (!firstConfigSet) {
+                firstConfigSet = true;
+                setPromptSelectFirstConfig(parseInt(key));
+              }
               const name = data.prompts[key].name;
               prt.push({ key: parseInt(key), value: name });
             }
@@ -89,15 +92,27 @@ export default function Header() {
         }
       });
   }, [lang]);
+
   useEffect(() => {
     if (promptSelectConfig !== null && selectedConfig == -1) {
       setSelectedConfig(0);
       //selectPrompt(0);
-      if (isDev) console.log('Saving config', promptSelectConfig[0].config);
-      saveConfig(promptSelectConfig[0].config);
+      if (isDev)
+        console.log(
+          'Saving config',
+          promptSelectConfig[promptSelectFirstConfig].config
+        );
+      saveConfig(CONFIG_DEFAULT);
+      saveConfig(promptSelectConfig[promptSelectFirstConfig].config);
       resetSettings();
     }
-  }, [promptSelectConfig, selectedConfig, saveConfig, resetSettings]);
+  }, [
+    promptSelectConfig,
+    selectedConfig,
+    saveConfig,
+    resetSettings,
+    promptSelectFirstConfig,
+  ]);
 
   const { isGenerating, viewingChat } = useAppContext();
   const isCurrConvGenerating = isGenerating(viewingChat?.conv.id ?? '');
@@ -134,7 +149,7 @@ export default function Header() {
       promptSelectConfig[value].config
     ) {
       const newConfig: typeof CONFIG_DEFAULT = JSON.parse(
-        JSON.stringify(localConfig)
+        JSON.stringify(CONFIG_DEFAULT)
       );
       // validate the config
       for (const key in promptSelectConfig[value].config) {
@@ -149,9 +164,13 @@ export default function Header() {
         const mustBeNumeric = isNumeric(
           CONFIG_DEFAULT[key as keyof typeof CONFIG_DEFAULT]
         );
+        const mustBeArray = Array.isArray(
+          CONFIG_DEFAULT[key as keyof typeof CONFIG_DEFAULT]
+        );
         if (mustBeString) {
           if (!isString(val)) {
             console.log(`Value for ${key} must be string`);
+            console.log(value);
             return;
           }
         } else if (mustBeNumeric) {
@@ -159,6 +178,7 @@ export default function Header() {
           const numVal = Number(trimedValue);
           if (isNaN(numVal) || !isNumeric(numVal) || trimedValue.length === 0) {
             console.log(`Value for ${key} must be numeric`);
+            console.log(value);
             return;
           }
           // force conversion to number
@@ -167,16 +187,25 @@ export default function Header() {
         } else if (mustBeBoolean) {
           if (!isBoolean(val)) {
             console.log(`Value for ${key} must be boolean`);
+            console.log(value);
+            return;
+          }
+        } else if (mustBeArray) {
+          if (!Array.isArray(val)) {
+            console.log(`Value for ${key} must be array`);
+            console.log(val);
             return;
           }
         } else {
           console.error(`Unknown default type for key ${key}`);
+          console.log(value);
         }
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error
         newConfig[key] = val;
       }
       if (isDev) console.log('Saving config', newConfig);
+      saveConfig(CONFIG_DEFAULT);
       saveConfig(newConfig);
       resetSettings();
     }
@@ -267,7 +296,7 @@ export default function Header() {
                     type="radio"
                     name="settings"
                     className="theme-controller btn btn-sm btn-block btn-ghost justify-start"
-                    aria-label="Manual settings"
+                    aria-label={t('Header.manualSettings')}
                     value={t('Header.manualSettings')}
                     onChange={() => setShowSettings(true)}
                   />
@@ -393,7 +422,36 @@ export default function Header() {
                     aria-label={language}
                     value={language}
                     onChange={() => {
-                      setLanguage(code);
+                      setLanguage(code, (n) => {
+                        const prt: { key: number; value: string }[] = [];
+                        if (promptSelectConfig) {
+                          let firstConfigSet = false;
+                          Object.keys(promptSelectConfig).forEach(
+                            function (key) {
+                              if (n == promptSelectConfig[parseInt(key)].lang) {
+                                if (!firstConfigSet) {
+                                  firstConfigSet = true;
+                                  setPromptSelectFirstConfig(parseInt(key));
+                                  if (isDev)
+                                    console.log(
+                                      'Saving config',
+                                      promptSelectConfig[parseInt(key)].config
+                                    );
+                                  saveConfig(CONFIG_DEFAULT);
+                                  saveConfig(
+                                    promptSelectConfig[parseInt(key)].config
+                                  );
+                                }
+                                const name =
+                                  promptSelectConfig[parseInt(key)].name;
+                                prt.push({ key: parseInt(key), value: name });
+                              }
+                            }
+                          );
+                        }
+                        resetSettings();
+                        setPromptSelectOptions(prt);
+                      });
                       i18next.changeLanguage(code);
                     }}
                     onClick={() => {

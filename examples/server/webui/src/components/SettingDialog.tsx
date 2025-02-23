@@ -291,6 +291,7 @@ export default function SettingDialog({
       const mustBeBoolean = isBoolean(CONFIG_DEFAULT[key as SettKey]);
       const mustBeString = isString(CONFIG_DEFAULT[key as SettKey]);
       const mustBeNumeric = isNumeric(CONFIG_DEFAULT[key as SettKey]);
+      const mustBeArray = Array.isArray(CONFIG_DEFAULT[key as SettKey]);
       if (mustBeString) {
         if (!isString(value)) {
           alert(`Value for ${key} must be string`);
@@ -309,6 +310,11 @@ export default function SettingDialog({
       } else if (mustBeBoolean) {
         if (!isBoolean(value)) {
           alert(`Value for ${key} must be boolean`);
+          return;
+        }
+      } else if (mustBeArray) {
+        if (!Array.isArray(value)) {
+          alert(`Value for ${key} must be array`);
           return;
         }
       } else {
