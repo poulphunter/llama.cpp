@@ -96,7 +96,11 @@ export default function Header() {
   }, [lang]);
 
   useEffect(() => {
-    if (promptSelectConfig !== null && selectedConfig == -1) {
+    if (
+      promptSelectConfig !== null &&
+      selectedConfig == -1 &&
+      promptSelectFirstConfig != -1
+    ) {
       setSelectedConfig(0);
       //selectPrompt(0);
       if (isDev)
