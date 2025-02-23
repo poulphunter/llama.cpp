@@ -371,7 +371,7 @@ export const AppContextProvider = ({
 
   const closeDropDownMenu = (e: string) => {
     // if we specify the dropdown ID we can remove "open" attribute
-    if (typeof e === 'string') {
+    if (e !== '') {
       const elem = document.getElementById(e);
       if (elem) {
         elem.removeAttribute('open');
