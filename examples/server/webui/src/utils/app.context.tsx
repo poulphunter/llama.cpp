@@ -15,6 +15,17 @@ import {
 } from './misc';
 import { BASE_URL, CONFIG_DEFAULT, isDev } from '../Config';
 import { matchPath, useLocation, useNavigate } from 'react-router';
+import i18next from 'i18next';
+import useStateCallback from './UseStateCallback.tsx';
+type languageOption = { language: string; code: string };
+
+const PROMPT_JSON = [
+  {
+    name: '',
+    lang: '',
+    config: CONFIG_DEFAULT,
+  },
+];
 
 interface AppContextValue {
   // conversations and messages
@@ -49,6 +60,20 @@ interface AppContextValue {
   setShowSettings: (show: boolean) => void;
   resetSettings: () => void;
   closeDropDownMenu: (e: string) => void;
+  setPromptSelectOptions: (e: { key: number; value: string }[]) => void;
+  promptSelectOptions: { key: number; value: string }[];
+  promptSelectConfig: typeof PROMPT_JSON | null;
+  setPromptSelectConfig: (e: typeof PROMPT_JSON | null) => void;
+  promptSelectFirstConfig: number;
+  setPromptSelectFirstConfig: (e: number) => void;
+  languageOptions: languageOption[];
+  language: string;
+  setLanguage: (
+    value: React.SetStateAction<string>,
+    callback?: (value?: React.SetStateAction<string>) => void
+  ) => void;
+  promptSeed: number;
+  resetPromptSeed: () => void;
 }
 
 // this callback is used for scrolling to the bottom of the chat and switching to the last node
@@ -88,8 +113,12 @@ export const AppContextProvider = ({
   const [canvasData, setCanvasData] = useState<CanvasData | null>(null);
   const [showSettings, setShowSettings] = useState(false);
   const [settingsSeed, setSettingsSeed] = useState(1);
+  const [promptSeed, setPromptSeed] = useState(42);
   const resetSettings = () => {
     setSettingsSeed(Math.random());
+  };
+  const resetPromptSeed = () => {
+    setPromptSeed(Math.random());
   };
 
   // handle change when the convId from URL is changed
@@ -383,6 +412,26 @@ export const AppContextProvider = ({
       ?.focus({ preventScroll: true });
   };
 
+  const languageOptions: languageOption[] = [
+    { language: 'Chinese', code: 'cn' },
+    { language: 'English', code: 'en' },
+    { language: 'French', code: 'fr' },
+    { language: 'German', code: 'de' },
+    { language: 'Italian', code: 'it' },
+    { language: 'Russian', code: 'ru' },
+    { language: 'Spanish', code: 'es' },
+  ];
+  const [language, setLanguage] = useStateCallback(i18next.language);
+  // const [language, setLanguage] = useState(i18next.language);
+  const [promptSelectOptions, setPromptSelectOptions] = useState<
+    { key: number; value: string }[]
+  >([]);
+  const [promptSelectConfig, setPromptSelectConfig] = useState<
+    typeof PROMPT_JSON | null
+  >(null);
+  const [promptSelectFirstConfig, setPromptSelectFirstConfig] =
+    useState<number>(-1);
+
   return (
     <AppContext.Provider
       value={{
@@ -401,6 +450,17 @@ export const AppContextProvider = ({
         settingsSeed,
         resetSettings,
         closeDropDownMenu,
+        languageOptions,
+        language,
+        setLanguage,
+        promptSeed,
+        resetPromptSeed,
+        promptSelectOptions,
+        setPromptSelectOptions,
+        promptSelectConfig,
+        setPromptSelectConfig,
+        promptSelectFirstConfig,
+        setPromptSelectFirstConfig,
       }}
     >
       {children}
