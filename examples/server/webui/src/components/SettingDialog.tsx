@@ -13,6 +13,8 @@ import {
   SquaresPlusIcon,
 } from '@heroicons/react/24/outline';
 import { OpenInNewTab } from '../utils/common';
+import { useTranslation } from 'react-i18next';
+import { HeaderLanguageBlock, HeaderThemeBlock } from './Header.tsx';
 
 type SettKey = keyof typeof CONFIG_DEFAULT;
 
@@ -258,13 +260,8 @@ const SETTING_SECTIONS: SettingSection[] = [
   },
 ];
 
-export default function SettingDialog({
-  show,
-  onClose,
-}: {
-  show: boolean;
-  onClose: () => void;
-}) {
+export default function SettingDialog() {
+  const { t } = useTranslation();
   const { config, saveConfig } = useAppContext();
   const [sectionIdx, setSectionIdx] = useState(0);
   const { closeDropDownMenu } = useAppContext();
@@ -323,7 +320,6 @@ export default function SettingDialog({
     }
     if (isDev) console.log('Saving config', newConfig);
     saveConfig(newConfig);
-    onClose();
   };
 
   const onChange = (key: SettKey) => (value: string | boolean) => {
@@ -332,9 +328,56 @@ export default function SettingDialog({
   };
 
   return (
-    <dialog className={classNames({ modal: true, 'modal-open': show })}>
-      <div className="modal-box w-11/12 max-w-3xl">
-        <h3 className="text-lg font-bold mb-6">Settings</h3>
+    <>
+      <div className="flex flex-col bg-base-200 min-h-full py-4 px-4">
+        <div className="flex flex-row items-center justify-between mt-4">
+          <h2 className="font-bold ml-4">{t('Settings.Settings')}</h2>
+          <div
+            className="tooltip tooltip-bottom"
+            data-tip={t('Settings.CloseBtn')}
+          >
+            <button
+              className="btn"
+              onClick={() => {
+                const elem = document.getElementById('settingBlock');
+                const elem2 = document.getElementById('mainBlock');
+                if (elem && elem2) {
+                  if (elem.style.display === 'none') {
+                    elem.style.display = 'block';
+                    elem2.style.display = 'none';
+                  } else {
+                    elem.style.display = 'none';
+                    elem2.style.display = 'block';
+                  }
+                }
+              }}
+            >
+              {/* settings button */}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div className="text-right block sm:hidden">
+          <div className="">
+            <HeaderThemeBlock id="theme-dropdown-2" />
+            <HeaderLanguageBlock id="language-dropdown-2" />
+          </div>
+        </div>
+        {/* <dialog className={classNames({ modal: true, 'modal-open': show })}>*/}
+        {/*   <div className="modal-box w-11/12 max-w-3xl">*/}
         <div className="flex flex-col md:flex-row h-[calc(90vh-12rem)]">
           {/* Left panel, showing sections - Desktop version */}
           <div className="hidden md:flex flex-col items-stretch pr-4 mr-4 border-r-2 border-base-200">
@@ -438,7 +481,7 @@ export default function SettingDialog({
           <button className="btn" onClick={resetConfig}>
             Reset to default
           </button>
-          <button className="btn" onClick={onClose}>
+          <button className="btn" onClick={resetConfig}>
             Close
           </button>
           <button className="btn btn-primary" onClick={handleSave}>
@@ -446,7 +489,7 @@ export default function SettingDialog({
           </button>
         </div>
       </div>
-    </dialog>
+    </>
   );
 }
 
