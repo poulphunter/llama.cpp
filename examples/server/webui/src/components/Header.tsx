@@ -4,7 +4,6 @@ import { useAppContext } from '../utils/app.context';
 import { classNames, isBoolean, isNumeric, isString } from '../utils/misc';
 import daisyuiThemes from 'daisyui/src/theming/themes';
 import { THEMES, CONFIG_DEFAULT, isDev } from '../Config';
-import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import i18next from 'i18next';
 import useStateCallback from '../utils/UseStateCallback.tsx';
