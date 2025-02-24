@@ -104,7 +104,7 @@ export function ConversationListButton() {
   return (
     <>
       {/* open sidebar button */}
-      <label htmlFor="toggle-conversation-list" className="btn lg:hidden">
+      <label htmlFor="toggle-conversation-list" className="btn m-1 lg:hidden">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
