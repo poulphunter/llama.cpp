@@ -8,11 +8,13 @@
   "ConversationList": {
     "Conversations": "Conversations",
     "sidebarClose": "close sidebar",
-    "newConversation": "+ New conversation",
+    "newConversation": "New conversation",
     "convInformation": "Conversations are saved to browser's IndexedDB",
     "deleteConfirm": "Are you sure to delete this conversation?",
     "downloadBtn": "Download",
-    "deleteBtn": "Delete"
+    "deleteBtn": "Delete",
+    "conversationBtn": "Conversations",
+    "closeBtn": "Close"
   },
   "ChatScreen": {
     "suggestions": "Here are some suggestions for you:",
@@ -37,7 +39,9 @@
     "copied": "Copied!",
     "copy": "\uD83D\uDCCB Copy"
   },
-  "config": {
+  "Settings": {
+    "Settings": "Settings",
+    "CloseBtn": "Close",
     "meaning": {
       "apiKey": "Set the API Key if you are using --api-key option for the server.",
       "systemMessage": "The starting message that defines how model should behave.",

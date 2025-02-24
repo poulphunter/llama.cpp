@@ -8,11 +8,13 @@
   "ConversationList": {
     "Conversations": "Conversaciones",
     "sidebarClose": "Cerrar barra lateral",
-    "newConversation": "+ Nueva conversación",
+    "newConversation": "Nueva conversación",
     "convInformation": "Las conversaciones se guardan en la base de datos indexada del navegador",
     "deleteConfirm": "¿Está seguro de eliminar esta conversación?",
     "downloadBtn": "Descargar",
-    "deleteBtn": "Eliminar"
+    "deleteBtn": "Eliminar",
+    "conversationBtn": "Conversaciones",
+    "closeBtn": "Cerca"
   },
   "ChatScreen": {
     "suggestions": "A continuación, se incluyen algunas sugerencias:",
@@ -37,7 +39,9 @@
     "copied": "¡Copiado!",
     "copy": "\uD83D\uDCCB Copiar"
   },
-  "config": {
+  "Settings": {
+    "Settings": "Ajustes",
+    "CloseBtn": "Cerca",
     "meaning": {
       "apiKey": "Establezca la clave API si está usando la opción --api-key para el servidor.",
       "systemMessage": "La mensaje de inicio que define cómo debe comportarse el modelo.",

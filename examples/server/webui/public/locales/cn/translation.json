@@ -8,11 +8,13 @@
   "ConversationList": {
     "Conversations": "对话",
     "sidebarClose": "关闭侧边栏",
-    "newConversation": "+ 新对话",
+    "newConversation": "新对话",
     "convInformation": "对话已保存到浏览器的 IndexedDB",
     "deleteConfirm": "您确定要删除此对话吗？",
     "downloadBtn": "下载",
-    "deleteBtn": "删除"
+    "deleteBtn": "删除",
+    "conversationBtn": "对话",
+    "closeBtn": "关闭"
   },
   "ChatScreen": {
     "suggestions": "以下是一些建议：",
@@ -37,7 +39,9 @@
     "copied": "已复制！",
     "copy": "\uD83D\uDCCB 复制"
   },
-  "config": {
+  "Settings": {
+    "Settings": "设置",
+    "CloseBtn": "关闭",
     "meaning": {
       "apiKey": "如果您使用 --api-key 选项设置服务器的 API 密钥。",
       "systemMessage": "定义模型应如何表现的起始消息。",

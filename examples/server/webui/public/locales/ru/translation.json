@@ -8,11 +8,13 @@
   "ConversationList": {
     "Conversations": "Беседы",
     "sidebarClose": "Закрыть боковую панель",
-    "newConversation": "+ Новый разговор",
+    "newConversation": "Новый разговор",
     "convInformation": "Беседы сохраняются в IndexedDB браузера",
     "deleteConfirm": "Вы уверены, что хотите удалить этот разговор?",
     "downloadBtn": "Загрузить",
-    "deleteBtn": "Удалить"
+    "deleteBtn": "Удалить",
+    "conversationBtn": "Беседы",
+    "closeBtn": "Закрывать"
   },
   "ChatScreen": {
     "suggestions": "Вот несколько предложений для вас:",
@@ -37,7 +39,9 @@
     "copied": "Скопировано!",
     "copy": "\uD83D\uDCCB Копировать"
   },
-  "config": {
+  "Settings": {
+    "Settings": "Настройки",
+    "CloseBtn": "Закрывать",
     "meaning": {
       "apiKey": "Установить ключ API если вы используете опцию --api-key для сервера.",
       "systemMessage": "Начальное сообщение, определяющее, как должна вести себя модель.",

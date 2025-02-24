@@ -8,11 +8,13 @@
   "ConversationList": {
     "Conversations": "Conversations",
     "sidebarClose": "Fermer le panneau latéral",
-    "newConversation": "+ Nouvelle conversation",
+    "newConversation": "Nouvelle conversation",
     "convInformation": "Les conversations sont enregistrées dans l'IndexedDB du navigateur",
     "deleteConfirm": "Etes vous certain de vouloir supprimer cette conversation ?",
     "downloadBtn": "Télécharger",
-    "deleteBtn": "Supprimer"
+    "deleteBtn": "Supprimer",
+    "conversationBtn": "Conversations",
+    "closeBtn": "Fermer"
   },
   "ChatScreen": {
     "suggestions": "Voici quelques examples :",
@@ -37,7 +39,9 @@
     "copied": "Copié !",
     "copy": "\uD83D\uDCCB Copier"
   },
-  "config": {
+  "Settings": {
+    "Settings": "Paramètres",
+    "CloseBtn": "Fermer",
     "meaning": {
       "apiKey": "Définissez la clé API si vous utilisez l’option --api-key pour le serveur.",
       "systemMessage": "Le message de départ qui définit comment le modèle doit se comporter.",
