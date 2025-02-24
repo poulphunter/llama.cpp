@@ -7,7 +7,7 @@ import { THEMES, CONFIG_DEFAULT, isDev } from '../Config';
 import { useTranslation } from 'react-i18next';
 import i18next from 'i18next';
 import useStateCallback from '../utils/UseStateCallback.tsx';
-import ConversationListButton from './ConversationList.tsx';
+import ConfigManager from './ConfigManager.tsx';
 import { ConversationListButton } from './ConversationList.tsx';
 
 type languageOption = { language: string; code: string };
