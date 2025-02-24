@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import i18next from 'i18next';
 import useStateCallback from '../utils/UseStateCallback.tsx';
+import ConversationListButton from './ConversationList.tsx';
 
 type languageOption = { language: string; code: string };
 
@@ -223,23 +224,7 @@ export default function Header() {
 
   return (
     <div className="flex flex-row items-center pt-6 pb-6 sticky top-0 z-10 bg-base-100">
-      {/* open sidebar button */}
-      <label htmlFor="toggle-drawer" className="btn btn-ghost lg:hidden">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          fill="currentColor"
-          className="bi bi-list"
-          viewBox="0 0 16 16"
-        >
-          <path
-            fillRule="evenodd"
-            d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"
-          />
-        </svg>
-      </label>
-
+    <ConversationListButton/>
       <div className="grow text-2xl font-bold ml-2">llama.cpp</div>
       {/* action buttons (top right) */}
       <div className="flex items-center">
@@ -478,6 +463,7 @@ export default function Header() {
           </div>
         </div>
       </div>
+        <ConfigManager/>
     </div>
   );
 }
