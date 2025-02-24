@@ -40,7 +40,6 @@ export default function Header() {
     document.body.dir = i18n.dir();
   }, [i18n, i18n.language]);
 
-  const navigate = useNavigate();
   const [selectedTheme, setSelectedTheme] = useState(StorageUtils.getTheme());
   const { setShowSettings, closeDropDownMenu } = useAppContext();
 
@@ -121,33 +120,6 @@ export default function Header() {
     promptSelectFirstConfig,
   ]);
 
-  const { isGenerating, viewingChat } = useAppContext();
-  const isCurrConvGenerating = isGenerating(viewingChat?.conv.id ?? '');
-
-  const removeConversation = () => {
-    if (isCurrConvGenerating || !viewingChat) return;
-    const convId = viewingChat?.conv.id;
-    if (window.confirm(t('Header.deleteConfirm'))) {
-      StorageUtils.remove(convId);
-      navigate('/');
-    }
-  };
-
-  const downloadConversation = () => {
-    if (isCurrConvGenerating || !viewingChat) return;
-    const convId = viewingChat?.conv.id;
-    const conversationJson = JSON.stringify(viewingChat, null, 2);
-    const blob = new Blob([conversationJson], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `conversation_${convId}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
-
   const selectPrompt = (value: number) => {
     setSelectedConfig(value);
     if (value === -1) {
@@ -224,44 +196,10 @@ export default function Header() {
 
   return (
     <div className="flex flex-row items-center pt-6 pb-6 sticky top-0 z-10 bg-base-100">
-    <ConversationListButton/>
-      <div className="grow text-2xl font-bold ml-2">llama.cpp</div>
+      <ConversationListButton />
+      <div className="grow text-2xl font-bold ml-2 text-center">llama.cpp</div>
       {/* action buttons (top right) */}
       <div className="flex items-center">
-        {viewingChat && (
-          <div className="dropdown dropdown-end">
-            {/* "..." button */}
-            <button
-              tabIndex={0}
-              role="button"
-              className="btn m-1"
-              disabled={isCurrConvGenerating}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                fill="currentColor"
-                className="bi bi-three-dots-vertical"
-                viewBox="0 0 16 16"
-              >
-                <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
-              </svg>
-            </button>
-            {/* dropdown menu */}
-            <ul
-              tabIndex={0}
-              className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
-            >
-              <li onClick={downloadConversation}>
-                <a>{t('Header.downloadBtn')}</a>
-              </li>
-              <li className="text-error" onClick={removeConversation}>
-                <a>{t('Header.deleteBtn')}</a>
-              </li>
-            </ul>
-          </div>
-        )}
         {promptSelectOptions.length > 0 ? (
           <div
             className="tooltip tooltip-bottom"

@@ -1,18 +1,18 @@
 {
   "Header": {
-    "deleteConfirm": "Etes vous certain de vouloir supprimer cette conversation ?",
-    "downloadBtn": "Télécharger",
-    "deleteBtn": "Supprimer",
     "tooltipSettings": "Configuration",
     "tooltipTheme": "Theme",
     "tooltipLanguage": "Langue",
     "manualSettings": "Configuration manuelle"
   },
-  "Sidebar": {
+  "ConversationList": {
     "Conversations": "Conversations",
     "sidebarClose": "Fermer le panneau latéral",
     "newConversation": "+ Nouvelle conversation",
-    "convInformation": "Les conversations sont enregistrées dans l'IndexedDB du navigateur"
+    "convInformation": "Les conversations sont enregistrées dans l'IndexedDB du navigateur",
+    "deleteConfirm": "Etes vous certain de vouloir supprimer cette conversation ?",
+    "downloadBtn": "Télécharger",
+    "deleteBtn": "Supprimer"
   },
   "ChatScreen": {
     "suggestions": "Voici quelques examples :",

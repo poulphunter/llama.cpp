@@ -1,18 +1,18 @@
 {
   "Header": {
-    "deleteConfirm": "Are you sure to delete this conversation?",
-    "downloadBtn": "Download",
-    "deleteBtn": "Delete",
     "tooltipSettings": "Settings",
     "tooltipTheme": "Theme",
     "tooltipLanguage": "Language",
     "manualSettings": "Manual settings"
   },
-  "Sidebar": {
+  "ConversationList": {
     "Conversations": "Conversations",
     "sidebarClose": "close sidebar",
     "newConversation": "+ New conversation",
-    "convInformation": "Conversations are saved to browser's IndexedDB"
+    "convInformation": "Conversations are saved to browser's IndexedDB",
+    "deleteConfirm": "Are you sure to delete this conversation?",
+    "downloadBtn": "Download",
+    "deleteBtn": "Delete"
   },
   "ChatScreen": {
     "suggestions": "Here are some suggestions for you:",
