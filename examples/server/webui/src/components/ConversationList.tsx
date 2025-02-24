@@ -6,7 +6,7 @@ import { useNavigate, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useAppContext } from '../utils/app.context.tsx';
 
-export function ConversationListDownloadDeleteButton() {
+export function ConversationListDownloadDeleteButtonHeader() {
   const { t } = useTranslation();
   const { isGenerating, viewingChat } = useAppContext();
   const isCurrConvGenerating = isGenerating(viewingChat?.conv.id ?? '');
@@ -120,7 +120,9 @@ export function ConversationListButton() {
           />
         </svg>
       </label>
-      <ConversationListDownloadDeleteButton />
+      <div className="hidden sm:block lg:hidden">
+        <ConversationListDownloadDeleteButtonHeader />
+      </div>
     </>
   );
 }
@@ -165,7 +167,6 @@ export default function ConversationList() {
             <h2 className="font-bold ml-4">
               {t('ConversationList.Conversations')}
             </h2>
-
             {/* close sidebar button */}
             <label
               className="btn btn-ghost lg:hidden"
@@ -193,7 +194,13 @@ export default function ConversationList() {
               </svg>
             </label>
           </div>
-
+          <div className="w-full sm:hidden lg:block">
+            <div className="flex flex-col items-center">
+              <span>
+                <ConversationListDownloadDeleteButtonHeader />
+              </span>
+            </div>
+          </div>
           {/* list of conversations */}
           <div
             className={classNames({
