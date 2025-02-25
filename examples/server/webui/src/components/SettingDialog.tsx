@@ -519,8 +519,8 @@ export default function SettingDialog() {
           {/* Right panel, showing setting fields */}
           <div className="grow px-4">
             {SETTING_SECTIONS.map((section, idx) => (
-              <>
-                <div key="main_${idx}" className="pt-3 pb-1">
+              <div key={idx}>
+                <div className="pt-3 pb-1">
                   {section.title}
                 </div>
                 {section.fields.map((field, sIdx) => {
@@ -568,7 +568,7 @@ export default function SettingDialog() {
                     );
                   }
                 })}
-              </>
+              </div>
             ))}
             <p className="opacity-40 mb-6 text-sm mt-8">
               {t('Settings.savedLocal')}
