@@ -6,7 +6,11 @@ import { useNavigate, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useAppContext } from '../utils/app.context.tsx';
 
-export function ConversationListDownloadDeleteButtonHeader() {
+export function ConversationListDownloadDeleteButtonHeader({
+  classAdd,
+}: {
+  classAdd: string;
+}) {
   const { t } = useTranslation();
   const { isGenerating, viewingChat } = useAppContext();
   const isCurrConvGenerating = isGenerating(viewingChat?.conv.id ?? '');
@@ -41,7 +45,7 @@ export function ConversationListDownloadDeleteButtonHeader() {
       {viewingChat && (
         <>
           <div
-            className="tooltip tooltip-bottom"
+            className={classAdd + 'tooltip tooltip-bottom'}
             data-tip={t('ConversationList.newConversation')}
           >
             <button
@@ -77,7 +81,7 @@ export function ConversationListDownloadDeleteButtonHeader() {
             </button>
           </div>
           <div
-            className="tooltip tooltip-bottom"
+            className={classAdd + 'tooltip tooltip-bottom'}
             data-tip={t('ConversationList.downloadBtn')}
           >
             <button
@@ -104,7 +108,7 @@ export function ConversationListDownloadDeleteButtonHeader() {
             </button>
           </div>
           <div
-            className="tooltip tooltip-bottom"
+            className={classAdd + 'tooltip tooltip-bottom'}
             data-tip={t('ConversationList.deleteBtn')}
           >
             <button
@@ -144,6 +148,16 @@ export function ConversationListButton() {
       <div
         className="tooltip tooltip-bottom"
         data-tip={t('ConversationList.conversationBtn')}
+        onClick={() => {
+          const elem = document.getElementById('convBlock');
+          if (elem) {
+            if (elem.style.display === 'none') {
+              elem.style.display = 'block';
+            } else {
+              elem.style.display = 'none';
+            }
+          }
+        }}
       >
         <label htmlFor="toggle-conversation-list" className="btn m-1 lg:hidden">
           <svg
@@ -162,9 +176,7 @@ export function ConversationListButton() {
           </svg>
         </label>
       </div>
-      <div className="hidden sm:block lg:hidden">
-        <ConversationListDownloadDeleteButtonHeader />
-      </div>
+      <ConversationListDownloadDeleteButtonHeader classAdd="hidden sm:block lg:hidden" />
     </>
   );
 }
@@ -194,84 +206,76 @@ export default function ConversationList() {
 
   return (
     <>
-      <div className="drawer-side z-50 lg:max-w-64">
-        <label
-          htmlFor="toggle-conversation-list"
-          aria-label={t('ConversationList.sidebarClose')}
-          className="drawer-overlay"
-        ></label>
-        <div className="flex flex-col bg-base-200 min-h-full max-w-64 py-4 px-4">
-          <div className="flex flex-row items-center justify-between mb-4 mt-4">
-            <h2 className="font-bold ml-4">
-              {t('ConversationList.Conversations')}
-            </h2>
-            {/* close sidebar button */}
+      <div className="h-full flex flex-col max-w-64 py-4 px-4">
+        <div className="flex flex-row items-center justify-between mb-4 mt-4">
+          <h2 className="font-bold ml-4">
+            {t('ConversationList.Conversations')}
+          </h2>
+          {/* close sidebar button */}
 
-            <div
-              className="tooltip tooltip-bottom"
-              data-tip={t('ConversationList.closeBtn')}
-            >
-              <label
-                className="btn btn-ghost m-1 lg:hidden"
-                onClick={() => {
-                  const elem = document.getElementById(
-                    'toggle-conversation-list'
-                  ) as HTMLInputElement;
-                  if (elem && elem.checked) {
-                    elem.click();
-                  }
-                }}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="size-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                  />
-                </svg>
-              </label>
-            </div>
-          </div>
-          <div className="w-full sm:hidden lg:block">
-            <div className="flex flex-col items-center">
-              <span>
-                <ConversationListDownloadDeleteButtonHeader />
-              </span>
-            </div>
-          </div>
-
-          {/* list of conversations */}
-          {conversations.map((conv) => (
-            <div
-              key={conv.id}
-              className={classNames({
-                'btn btn-ghost justify-start font-normal': true,
-                'btn-active': conv.id === currConv?.id,
-              })}
-              onClick={() => {
-                navigate(`/chat/${conv.id}`);
-                const elem = document.getElementById(
-                  'toggle-conversation-list'
-                ) as HTMLInputElement;
-                if (elem && elem.checked) {
-                  elem.click();
+          <div
+            className="tooltip tooltip-bottom"
+            data-tip={t('ConversationList.closeBtn')}
+            onClick={() => {
+              const elem = document.getElementById('convBlock');
+              if (elem) {
+                if (elem.style.display === 'none') {
+                  elem.style.display = 'block';
+                } else {
+                  elem.style.display = 'none';
                 }
-              }}
-              dir="auto"
-            >
-              <span className="truncate">{conv.name}</span>
-            </div>
-          ))}
-          <div className="text-center text-xs opacity-40 mt-auto mx-4">
-            {t('ConversationList.convInformation')}
+              }
+            }}
+          >
+            <label className="btn btn-ghost m-1 lg:hidden">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                />
+              </svg>
+            </label>
           </div>
+        </div>
+        <div className="w-full sm:hidden lg:block">
+          <div className="flex flex-col items-center">
+            <span>
+              <ConversationListDownloadDeleteButtonHeader classAdd="" />
+            </span>
+          </div>
+        </div>
+        {/* list of conversations */}
+        {conversations.map((conv) => (
+          <div
+            key={conv.id}
+            className={classNames({
+              'btn btn-ghost justify-start font-normal': true,
+              'btn-active': conv.id === currConv?.id,
+            })}
+            onClick={() => {
+              navigate(`/chat/${conv.id}`);
+              const elem = document.getElementById(
+                'toggle-conversation-list'
+              ) as HTMLInputElement;
+              if (elem && elem.checked) {
+                elem.click();
+              }
+            }}
+            dir="auto"
+          >
+            <span className="truncate">{conv.name}</span>
+          </div>
+        ))}
+        <div className="text-center text-xs opacity-40 mt-auto mx-4">
+          {t('ConversationList.convInformation')}
         </div>
       </div>
     </>

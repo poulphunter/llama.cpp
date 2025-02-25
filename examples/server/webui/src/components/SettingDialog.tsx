@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppContext } from '../utils/app.context';
 import { CONFIG_DEFAULT, CONFIG_INFO } from '../Config';
 import { isDev } from '../Config';
 import StorageUtils from '../utils/storage';
-import { classNames, isBoolean, isNumeric, isString } from '../utils/misc';
+import { isBoolean, isNumeric, isString } from '../utils/misc';
 import {
   BeakerIcon,
   ChatBubbleOvalLeftEllipsisIcon,
@@ -263,13 +263,18 @@ const SETTING_SECTIONS: SettingSection[] = [
 export default function SettingDialog() {
   const { t } = useTranslation();
   const { config, saveConfig } = useAppContext();
-  const [sectionIdx, setSectionIdx] = useState(0);
-  const { closeDropDownMenu } = useAppContext();
+  const sectionIdx = 0;
+  // const [sectionIdx, setSectionIdx] = useState(0);
+  // const { closeDropDownMenu } = useAppContext();
 
   // clone the config object to prevent direct mutation
   const [localConfig, setLocalConfig] = useState<typeof CONFIG_DEFAULT>(
     JSON.parse(JSON.stringify(config))
   );
+  // when config is changed, reload localconfig
+  useEffect(() => {
+    setLocalConfig(config);
+  }, [config]);
 
   const resetConfig = () => {
     if (window.confirm('Are you sure to reset all settings?')) {
@@ -329,7 +334,7 @@ export default function SettingDialog() {
 
   return (
     <>
-      <div className="flex flex-col bg-base-200 min-h-full py-4 px-4">
+      <div className="h-screen overflow-y-auto overflow-x-clip flex flex-col bg-base-200 py-4 px-4">
         <div className="flex flex-row items-center justify-between mt-4">
           <h2 className="font-bold ml-4">{t('Settings.Settings')}</h2>
           <div
@@ -376,52 +381,53 @@ export default function SettingDialog() {
             <HeaderLanguageBlock id="language-dropdown-2" />
           </div>
         </div>
+
         {/* <dialog className={classNames({ modal: true, 'modal-open': show })}>*/}
         {/*   <div className="modal-box w-11/12 max-w-3xl">*/}
         <div className="flex flex-col md:flex-row h-[calc(90vh-12rem)]">
           {/* Left panel, showing sections - Desktop version */}
-          <div className="hidden md:flex flex-col items-stretch pr-4 mr-4 border-r-2 border-base-200">
-            {SETTING_SECTIONS.map((section, idx) => (
-              <div
-                key={idx}
-                className={classNames({
-                  'btn btn-ghost justify-start font-normal w-44 mb-1': true,
-                  'btn-active': sectionIdx === idx,
-                })}
-                onClick={() => setSectionIdx(idx)}
-                dir="auto"
-              >
-                {section.title}
-              </div>
-            ))}
-          </div>
+          {/*<div className="hidden md:flex flex-col items-stretch pr-4 mr-4 border-r-2 border-base-200">*/}
+          {/*  {SETTING_SECTIONS.map((section, idx) => (*/}
+          {/*    <div*/}
+          {/*      key={idx}*/}
+          {/*      className={classNames({*/}
+          {/*        'btn btn-ghost justify-start font-normal w-44 mb-1': true,*/}
+          {/*        'btn-active': sectionIdx === idx,*/}
+          {/*      })}*/}
+          {/*      onClick={() => setSectionIdx(idx)}*/}
+          {/*      dir="auto"*/}
+          {/*    >*/}
+          {/*      {section.title}*/}
+          {/*    </div>*/}
+          {/*  ))}*/}
+          {/*</div>*/}
 
           {/* Left panel, showing sections - Mobile version */}
-          <div className="md:hidden flex flex-row gap-2 mb-4">
-            <details className="dropdown" id="settingDialogDropdown">
-              <summary className="btn bt-sm w-full m-1">
-                {SETTING_SECTIONS[sectionIdx].title}
-              </summary>
-              <ul className="menu dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
-                {SETTING_SECTIONS.map((section, idx) => (
-                  <div
-                    key={idx}
-                    className={classNames({
-                      'btn btn-ghost justify-start font-normal': true,
-                      'btn-active': sectionIdx === idx,
-                    })}
-                    onClick={() => {
-                      closeDropDownMenu('settingDialogDropdown');
-                      setSectionIdx(idx);
-                    }}
-                    dir="auto"
-                  >
-                    {section.title}
-                  </div>
-                ))}
-              </ul>
-            </details>
-          </div>
+          {/*<div className="md:hidden flex flex-row gap-2 mb-4">*/}
+          {/*  <details className="dropdown" id="settingDialogDropdown">*/}
+          {/*    <summary className="btn bt-sm w-full m-1">*/}
+          {/*      {SETTING_SECTIONS[sectionIdx].title}*/}
+          {/*    </summary>*/}
+          {/*    <ul className="menu dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow">*/}
+          {/*      {SETTING_SECTIONS.map((section, idx) => (*/}
+          {/*        <div*/}
+          {/*          key={idx}*/}
+          {/*          className={classNames({*/}
+          {/*            'btn btn-ghost justify-start font-normal': true,*/}
+          {/*            'btn-active': sectionIdx === idx,*/}
+          {/*          })}*/}
+          {/*          onClick={() => {*/}
+          {/*            closeDropDownMenu('settingDialogDropdown');*/}
+          {/*            setSectionIdx(idx);*/}
+          {/*          }}*/}
+          {/*          dir="auto"*/}
+          {/*        >*/}
+          {/*          {section.title}*/}
+          {/*        </div>*/}
+          {/*      ))}*/}
+          {/*    </ul>*/}
+          {/*  </details>*/}
+          {/*</div>*/}
 
           {/* Right panel, showing setting fields */}
           <div className="grow overflow-y-auto px-4">

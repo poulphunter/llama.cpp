@@ -238,12 +238,15 @@ export default function ChatScreen() {
         })}
       >
         {/* chat messages */}
-        <div id="messages-list" className="grow">
+        <div
+          id="messages-list"
+          className="grow overflow-y-auto overflow-x-hidden "
+        >
           {/* placeholder to shift the message to the bottom */}
           {viewingChat ? (
             ''
           ) : (
-            <div className="flex items-center text-center sm:text-left align-middle h-full mx-auto">
+            <div className="flex items-center text-center sm:text-left align-middle mx-auto">
               {config.questionIdeas.length > 0 ? (
                 <div className="w-full text-center">
                   <div className="">{t('ChatScreen.suggestions')}</div>
@@ -284,23 +287,60 @@ export default function ChatScreen() {
 
         {/* chat input */}
         <div className="flex flex-row items-center pt-8 pb-6 sticky bottom-0 bg-base-100">
-          <textarea
-            className="textarea textarea-bordered w-full"
-            placeholder={t('ChatScreen.textAreaPlaceHolder')}
-            ref={inputRef}
-            value={inputMsg}
-            onChange={(e) => setInputMsg(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.nativeEvent.isComposing || e.keyCode === 229) return;
-              if (e.key === 'Enter' && e.shiftKey) return;
-              if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendNewMessage();
-              }
-            }}
-            id="msg-input"
-            dir="auto"
-          ></textarea>
+          <div
+            className="
+    w-full
+    grid
+    text-sm
+    [&>textarea]:text-inherit
+    after:text-inherit
+    [&>textarea]:resize-none
+    [&>textarea]:overflow-x-hidden
+    [&>textarea]:overflow-y-auto
+    [&>textarea]:[grid-area:1/1/2/2]
+    after:[grid-area:1/1/2/2]
+    after:whitespace-pre-wrap
+    after:invisible
+    after:content-[attr(data-cloned-val)_'_']
+    after:border
+"
+          >
+            <textarea
+              className="textarea textarea-bordered"
+              placeholder={t('ChatScreen.textAreaPlaceHolder')}
+              ref={inputRef}
+              value={inputMsg}
+              onChange={(e) => {
+                setInputMsg(e.target.value);
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
+                e.target.parentNode.dataset.clonedVal =
+                  e.target.value + '<br/>';
+              }}
+              onKeyDown={(e) => {
+                if (e.nativeEvent.isComposing || e.keyCode === 229) return;
+                if (e.key === 'Enter' && e.shiftKey) return;
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  sendNewMessage();
+                }
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
+                e.target.parentNode.dataset.clonedVal =
+                  (document.getElementById('msg-input') as HTMLTextAreaElement)
+                    .value + '<br/>';
+              }}
+              id="msg-input"
+              dir="auto"
+              onInput={(e) => {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
+                e.target.parentNode.dataset.clonedVal =
+                  (document.getElementById('msg-input') as HTMLTextAreaElement)
+                    .value + '<br/>';
+              }}
+            ></textarea>
+          </div>
           {isGenerating(currConvId ?? '') ? (
             <button
               className="btn btn-neutral ml-2"
@@ -310,7 +350,7 @@ export default function ChatScreen() {
             </button>
           ) : (
             <button
-              className="btn btn-primary ml-2"
+              className="btn btn-primary m-2"
               onClick={sendNewMessage}
               disabled={inputMsg.trim().length === 0}
             >
