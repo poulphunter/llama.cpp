@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+} from 'react';
 import {
   APIMessage,
   CanvasData,
@@ -114,9 +120,9 @@ export const AppContextProvider = ({
   const [showSettings, setShowSettings] = useState(false);
   const [settingsSeed, setSettingsSeed] = useState(1);
   const [promptSeed, setPromptSeed] = useState(42);
-  const resetSettings = () => {
+  const resetSettings = useCallback(() => {
     setSettingsSeed(Math.random());
-  };
+  }, []);
   const resetPromptSeed = () => {
     setPromptSeed(Math.random());
   };
@@ -393,10 +399,10 @@ export const AppContextProvider = ({
     await generateMessage(convId, parentNodeId, onChunk);
   };
 
-  const saveConfig = (config: typeof CONFIG_DEFAULT) => {
+  const saveConfig = useCallback((config: typeof CONFIG_DEFAULT) => {
     StorageUtils.setConfig(config);
     setConfig(config);
-  };
+  }, []);
 
   const closeDropDownMenu = (e: string) => {
     // if we specify the dropdown ID we can remove "open" attribute
@@ -431,6 +437,69 @@ export const AppContextProvider = ({
   >(null);
   const [promptSelectFirstConfig, setPromptSelectFirstConfig] =
     useState<number>(-1);
+
+  useEffect(() => {
+    fetch('/prompts.config.json')
+      .then((response) => response.json())
+      .then((data) => {
+        const prt: { key: number; value: string }[] = [];
+        if (data && data.prompts) {
+          setPromptSelectConfig(data.prompts);
+          let firstConfigSet = false;
+          Object.keys(data.prompts).forEach(function (key) {
+            if (
+              language == data.prompts[key].lang ||
+              data.prompts[key].lang == ''
+            ) {
+              if (!firstConfigSet) {
+                firstConfigSet = true;
+                setPromptSelectFirstConfig(parseInt(key));
+              }
+              const name = data.prompts[key].name;
+              prt.push({ key: parseInt(key), value: name });
+            }
+          });
+        }
+        setPromptSelectOptions(prt);
+      })
+      .catch((error) => {
+        if (isDev) {
+          console.log(error);
+        }
+      });
+  }, [
+    language,
+    setPromptSelectConfig,
+    setPromptSelectFirstConfig,
+    setPromptSelectOptions,
+  ]);
+
+  const [selectedConfig, setSelectedConfig] = useState<number>(-1);
+
+  useEffect(() => {
+    if (
+      promptSelectConfig !== null &&
+      selectedConfig == -1 &&
+      promptSelectFirstConfig != -1
+    ) {
+      setSelectedConfig(0);
+      //selectPrompt(0);
+      if (isDev)
+        console.log(
+          'Saving config',
+          promptSelectConfig[promptSelectFirstConfig].config
+        );
+      saveConfig(CONFIG_DEFAULT);
+      saveConfig(promptSelectConfig[promptSelectFirstConfig].config);
+      resetSettings();
+    }
+  }, [
+    promptSelectConfig,
+    selectedConfig,
+    saveConfig,
+    resetSettings,
+    promptSelectFirstConfig,
+  ]);
 
   return (
     <AppContext.Provider
