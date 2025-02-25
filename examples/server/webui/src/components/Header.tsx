@@ -27,7 +27,10 @@ export function HeaderThemeBlock({ id }: { id: string }) {
     /* theme controller is copied from https://daisyui.com/components/theme-controller/ */
   }
   return (
-    <div className="tooltip tooltip-bottom z-100" data-tip={t('Header.tooltipTheme')}>
+    <div
+      className="tooltip tooltip-bottom z-100"
+      data-tip={t('Header.tooltipTheme')}
+    >
       <div id={id} className="dropdown dropdown-end dropdown-bottom">
         <div tabIndex={0} role="button" className="btn m-1">
           <svg
