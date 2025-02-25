@@ -434,8 +434,8 @@ export default function SettingDialog() {
               const elem = document.getElementById('settingBlock');
               const elem2 = document.getElementById('mainBlock');
               if (elem && elem2) {
-                  elem.style.display = 'none';
-                  elem2.style.display = 'block';
+                elem.style.display = 'none';
+                elem2.style.display = 'block';
               }
             }}
           >
@@ -520,9 +520,7 @@ export default function SettingDialog() {
           <div className="grow px-4">
             {SETTING_SECTIONS.map((section, idx) => (
               <div key={idx}>
-                <div className="pt-3 pb-1">
-                  {section.title}
-                </div>
+                <div className="pt-3 pb-1">{section.title}</div>
                 {section.fields.map((field, sIdx) => {
                   const key = `${idx}-${sIdx}-${field.key}-${section.title}`;
                   if (field.type === SettingInputType.SHORT_INPUT) {
