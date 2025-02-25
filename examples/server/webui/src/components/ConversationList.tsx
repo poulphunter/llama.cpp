@@ -45,23 +45,23 @@ export function ConversationListDownloadDeleteButtonHeader({
       {viewingChat && (
         <>
           <div
-            className={classAdd + 'tooltip tooltip-bottom'}
+            className={classAdd + ' tooltip tooltip-bottom z-100'}
             data-tip={t('ConversationList.newConversation')}
+            onClick={() => {
+              navigate('/');
+              const elem = document.getElementById(
+                'toggle-conversation-list'
+              ) as HTMLInputElement;
+              if (elem && elem.checked) {
+                elem.click();
+              }
+            }}
           >
             <button
               role="button"
               className={classNames({
                 'btn m-1 ': true,
               })}
-              onClick={() => {
-                navigate('/');
-                const elem = document.getElementById(
-                  'toggle-conversation-list'
-                ) as HTMLInputElement;
-                if (elem && elem.checked) {
-                  elem.click();
-                }
-              }}
               aria-label={t('ConversationList.newConversation')}
             >
               <svg
@@ -81,14 +81,14 @@ export function ConversationListDownloadDeleteButtonHeader({
             </button>
           </div>
           <div
-            className={classAdd + 'tooltip tooltip-bottom'}
+            className={classAdd + ' tooltip tooltip-bottom z-100'}
             data-tip={t('ConversationList.downloadBtn')}
+            onClick={downloadConversation}
           >
             <button
               role="button"
               className="btn m-1"
               disabled={isCurrConvGenerating}
-              onClick={downloadConversation}
               aria-label={t('ConversationList.downloadBtn')}
             >
               <svg
@@ -108,14 +108,14 @@ export function ConversationListDownloadDeleteButtonHeader({
             </button>
           </div>
           <div
-            className={classAdd + 'tooltip tooltip-bottom'}
+            className={classAdd + ' tooltip tooltip-bottom z-100'}
             data-tip={t('ConversationList.deleteBtn')}
+            onClick={removeConversation}
           >
             <button
               role="button"
               className="btn m-1"
               disabled={isCurrConvGenerating}
-              onClick={removeConversation}
               aria-label={t('ConversationList.deleteBtn')}
             >
               <svg
@@ -146,16 +146,12 @@ export function ConversationListButton() {
     <>
       {/* open sidebar button */}
       <div
-        className="tooltip tooltip-bottom"
+        className="tooltip tooltip-bottom z-100"
         data-tip={t('ConversationList.conversationBtn')}
         onClick={() => {
           const elem = document.getElementById('convBlock');
           if (elem) {
-            if (elem.style.display === 'none') {
-              elem.style.display = 'block';
-            } else {
-              elem.style.display = 'none';
-            }
+            elem.style.display = 'block';
           }
         }}
       >
@@ -214,7 +210,7 @@ export default function ConversationList() {
           {/* close sidebar button */}
 
           <div
-            className="tooltip tooltip-bottom"
+            className="tooltip tooltip-bottom z-100"
             data-tip={t('ConversationList.closeBtn')}
             onClick={() => {
               const elem = document.getElementById('convBlock');

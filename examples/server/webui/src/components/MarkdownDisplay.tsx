@@ -124,6 +124,7 @@ export const RunPyCodeButton = ({
   className?: string;
 }) => {
   const { setCanvasData } = useAppContext();
+  const { t } = useTranslation();
   return (
     <>
       <button
@@ -135,7 +136,7 @@ export const RunPyCodeButton = ({
           })
         }
       >
-        ▶️ Run
+        ▶️ {t('MarkdownDisplay.Run')}
       </button>
     </>
   );

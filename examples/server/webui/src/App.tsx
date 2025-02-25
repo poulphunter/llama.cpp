@@ -41,7 +41,7 @@ function AppLayout() {
         </div>
         <div
           id="settingBlock"
-          className="w-full hidden xl:block bg-base-200 overflow-y-auto overflow-x-clip "
+          className="w-full hidden xl:block xl:max-w-md xl:min-w-md bg-base-200 overflow-y-auto overflow-x-clip "
         >
           <SettingDialog />
         </div>

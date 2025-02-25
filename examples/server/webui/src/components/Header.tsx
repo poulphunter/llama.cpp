@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import StorageUtils from '../utils/storage';
 import { useAppContext } from '../utils/app.context';
-import { classNames, isBoolean, isNumeric, isString } from '../utils/misc';
+import { classNames } from '../utils/misc';
 import daisyuiThemes from 'daisyui/src/theming/themes';
 import { THEMES, CONFIG_DEFAULT, isDev } from '../Config';
 import { useTranslation } from 'react-i18next';
@@ -27,7 +27,7 @@ export function HeaderThemeBlock({ id }: { id: string }) {
     /* theme controller is copied from https://daisyui.com/components/theme-controller/ */
   }
   return (
-    <div className="tooltip tooltip-bottom" data-tip={t('Header.tooltipTheme')}>
+    <div className="tooltip tooltip-bottom z-100" data-tip={t('Header.tooltipTheme')}>
       <div id={id} className="dropdown dropdown-end dropdown-bottom">
         <div tabIndex={0} role="button" className="btn m-1">
           <svg
@@ -92,7 +92,7 @@ export function HeaderLanguageBlock({ id }: { id: string }) {
   }
   return (
     <div
-      className="tooltip tooltip-bottom"
+      className="tooltip tooltip-bottom z-100"
       data-tip={t('Header.tooltipLanguage')}
     >
       <div id={id} className="dropdown dropdown-end dropdown-bottom">
@@ -174,154 +174,6 @@ export default function Header() {
     document.body.dir = i18n.dir();
   }, [i18n, i18n.language]);
 
-  const {
-    setShowSettings,
-    closeDropDownMenu,
-    language,
-    promptSelectOptions,
-    setPromptSelectConfig,
-    setPromptSelectFirstConfig,
-    setPromptSelectOptions,
-    promptSelectConfig,
-    promptSelectFirstConfig,
-  } = useAppContext();
-
-  const { saveConfig, resetSettings } = useAppContext();
-
-  const [selectedConfig, setSelectedConfig] = useState<number>(-1);
-
-  useEffect(() => {
-    fetch('/prompts.config.json')
-      .then((response) => response.json())
-      .then((data) => {
-        const prt: { key: number; value: string }[] = [];
-        if (data && data.prompts) {
-          setPromptSelectConfig(data.prompts);
-          let firstConfigSet = false;
-          Object.keys(data.prompts).forEach(function (key) {
-            if (language == data.prompts[key].lang) {
-              if (!firstConfigSet) {
-                firstConfigSet = true;
-                setPromptSelectFirstConfig(parseInt(key));
-              }
-              const name = data.prompts[key].name;
-              prt.push({ key: parseInt(key), value: name });
-            }
-          });
-        }
-        setPromptSelectOptions(prt);
-      })
-      .catch((error) => {
-        if (isDev) {
-          console.log(error);
-        }
-      });
-  }, [
-    language,
-    setPromptSelectConfig,
-    setPromptSelectFirstConfig,
-    setPromptSelectOptions,
-  ]);
-
-  useEffect(() => {
-    if (
-      promptSelectConfig !== null &&
-      selectedConfig == -1 &&
-      promptSelectFirstConfig != -1
-    ) {
-      setSelectedConfig(0);
-      //selectPrompt(0);
-      if (isDev)
-        console.log(
-          'Saving config',
-          promptSelectConfig[promptSelectFirstConfig].config
-        );
-      saveConfig(CONFIG_DEFAULT);
-      saveConfig(promptSelectConfig[promptSelectFirstConfig].config);
-      resetSettings();
-    }
-  }, [
-    promptSelectConfig,
-    selectedConfig,
-    saveConfig,
-    resetSettings,
-    promptSelectFirstConfig,
-  ]);
-
-  const selectPrompt = (value: number) => {
-    setSelectedConfig(value);
-    if (value === -1) {
-      resetSettings();
-      return;
-    }
-    if (
-      promptSelectConfig &&
-      promptSelectConfig[value] &&
-      promptSelectConfig[value].config
-    ) {
-      const newConfig: typeof CONFIG_DEFAULT = JSON.parse(
-        JSON.stringify(CONFIG_DEFAULT)
-      );
-      // validate the config
-      for (const key in promptSelectConfig[value].config) {
-        const val =
-          promptSelectConfig[value].config[key as keyof typeof CONFIG_DEFAULT];
-        const mustBeBoolean = isBoolean(
-          CONFIG_DEFAULT[key as keyof typeof CONFIG_DEFAULT]
-        );
-        const mustBeString = isString(
-          CONFIG_DEFAULT[key as keyof typeof CONFIG_DEFAULT]
-        );
-        const mustBeNumeric = isNumeric(
-          CONFIG_DEFAULT[key as keyof typeof CONFIG_DEFAULT]
-        );
-        const mustBeArray = Array.isArray(
-          CONFIG_DEFAULT[key as keyof typeof CONFIG_DEFAULT]
-        );
-        if (mustBeString) {
-          if (!isString(val)) {
-            console.log(`Value for ${key} must be string`);
-            console.log(value);
-            return;
-          }
-        } else if (mustBeNumeric) {
-          const trimedValue = val.toString().trim();
-          const numVal = Number(trimedValue);
-          if (isNaN(numVal) || !isNumeric(numVal) || trimedValue.length === 0) {
-            console.log(`Value for ${key} must be numeric`);
-            console.log(value);
-            return;
-          }
-          // force conversion to number
-          // @ts-expect-error this is safe
-          newConfig[key] = numVal;
-        } else if (mustBeBoolean) {
-          if (!isBoolean(val)) {
-            console.log(`Value for ${key} must be boolean`);
-            console.log(value);
-            return;
-          }
-        } else if (mustBeArray) {
-          if (!Array.isArray(val)) {
-            console.log(`Value for ${key} must be array`);
-            console.log(val);
-            return;
-          }
-        } else {
-          console.error(`Unknown default type for key ${key}`);
-          console.log(value);
-        }
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
-        newConfig[key] = val;
-      }
-      if (isDev) console.log('Saving config', newConfig);
-      saveConfig(CONFIG_DEFAULT);
-      saveConfig(newConfig);
-      resetSettings();
-    }
-  };
-
   return (
     <div className="flex flex-row items-center pt-6 pb-6 sticky top-0 z-10 bg-base-100">
       <ConversationListButton />
@@ -329,51 +181,16 @@ export default function Header() {
       {/* action buttons (top right) */}
       <div className="flex items-center">
         <div
-          className="tooltip tooltip-bottom"
+          className="hidden xl:block tooltip tooltip-bottom z-100"
           data-tip={t('Header.tooltipSettings')}
+          onClick={() => {
+            const elem = document.getElementById('settingBlock');
+            if (elem) {
+              elem.style.display = 'block';
+            }
+          }}
         >
-          <button
-            className="btn m-1 hidden xl:block"
-            onClick={() => {
-              const elem = document.getElementById('settingBlock');
-              if (elem) {
-                if (elem.style.display === 'none') {
-                  elem.style.display = 'block';
-                } else {
-                  elem.style.display = 'none';
-                }
-              }
-            }}
-          >
-            {/* settings button */}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              className="bi bi-gear"
-              viewBox="0 0 16 16"
-            >
-              <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492M5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0" />
-              <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115z" />
-            </svg>
-          </button>
-          <button
-            className="btn  m-1 xl:hidden"
-            onClick={() => {
-              const elem = document.getElementById('settingBlock');
-              const elem2 = document.getElementById('mainBlock');
-              if (elem && elem2) {
-                if (elem.style.display === 'none') {
-                  elem.style.display = 'block';
-                  elem2.style.display = 'none';
-                } else {
-                  elem.style.display = 'none';
-                  elem2.style.display = 'block';
-                }
-              }
-            }}
-          >
+          <button className="btn m-1">
             {/* settings button */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -388,82 +205,34 @@ export default function Header() {
             </svg>
           </button>
         </div>
-
-        {promptSelectOptions.length > 0 ? (
-          <div
-            className="tooltip tooltip-bottom"
-            data-tip={t('Header.tooltipSettings')}
-          >
-            <div className="dropdown dropdown-end dropdown-bottom">
-              <div tabIndex={0} role="button" className="btn m-1">
-                {/* settings button */}
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  fill="currentColor"
-                  className="bi bi-gear"
-                  viewBox="0 0 16 16"
-                >
-                  <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492M5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0" />
-                  <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115z" />
-                </svg>
-              </div>
-              <ul
-                tabIndex={0}
-                className="dropdown-content bg-base-300 rounded-box z-[1] w-52 p-2 shadow-2xl h-80 overflow-y-auto"
-              >
-                <li>
-                  <input
-                    type="radio"
-                    name="settings"
-                    className="theme-controller btn btn-sm btn-block btn-ghost justify-start"
-                    aria-label={t('Header.manualSettings')}
-                    value={t('Header.manualSettings')}
-                    onClick={() => setShowSettings(true)}
-                    onChange={(e) => e.target.checked && selectPrompt(-1)}
-                  />
-                </li>
-                {[...promptSelectOptions].map((opt) => (
-                  <li key={opt.key}>
-                    <input
-                      type="radio"
-                      name="settings"
-                      className="theme-controller btn btn-sm btn-block btn-ghost justify-start"
-                      aria-label={opt.value}
-                      value={opt.value}
-                      checked={selectedConfig === opt.key}
-                      onChange={(e) =>
-                        e.target.checked && selectPrompt(opt.key)
-                      }
-                      onClick={() => {
-                        closeDropDownMenu('');
-                      }}
-                    />
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        ) : (
-          <div className="tooltip tooltip-bottom" data-tip="Settings">
-            <button className="btn" onClick={() => setShowSettings(true)}>
-              {/* settings button */}
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                fill="currentColor"
-                className="bi bi-gear"
-                viewBox="0 0 16 16"
-              >
-                <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492M5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0" />
-                <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115z" />
-              </svg>
-            </button>
-          </div>
-        )}
-        <div className="hidden sm:block">
+        <div
+          className="xl:hidden tooltip tooltip-bottom z-100"
+          data-tip={t('Header.tooltipSettings')}
+          onClick={() => {
+            const elem = document.getElementById('settingBlock');
+            const elem2 = document.getElementById('mainBlock');
+            if (elem && elem2) {
+              elem.style.display = 'block';
+              elem2.style.display = 'none';
+            }
+          }}
+        >
+          <button className="btn m-1">
+            {/* settings button */}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              className="bi bi-gear"
+              viewBox="0 0 16 16"
+            >
+              <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492M5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0" />
+              <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115z" />
+            </svg>
+          </button>
+        </div>
+        <div className="hidden lg:block">
           <HeaderThemeBlock id="theme-dropdown-1" />
           <HeaderLanguageBlock id="language-dropdown-1" />
         </div>
