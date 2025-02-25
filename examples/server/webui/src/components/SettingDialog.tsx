@@ -478,8 +478,8 @@ export default function SettingDialog() {
         });
         setPromptSelectOptions(prt);
       }
-      const formatted = JSON.stringify(result, null, 2);
-      console.log(formatted);
+      // const formatted = JSON.stringify(result, null, 2);
+      console.log("JSON loaded !");
     };
     const fItem: Blob | null = files.item(0);
     if (fItem) {
