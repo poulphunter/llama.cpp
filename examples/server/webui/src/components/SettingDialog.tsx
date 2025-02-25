@@ -422,6 +422,71 @@ export default function SettingDialog() {
       resetSettings();
     }
   };
+  const downloadConfigs = () => {
+    const configJson = JSON.stringify({ prompts: promptSelectConfig }, null, 2);
+    const blob = new Blob([configJson], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `config.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const {
+    setPromptSelectConfig,
+    language,
+    setPromptSelectFirstConfig,
+    setPromptSelectOptions,
+  } = useAppContext();
+  const onFileChange = () => {
+    const inputE: HTMLInputElement = document?.getElementById(
+      'configJsonInput'
+    ) as HTMLInputElement;
+    let files: FileList | null = null;
+    if (inputE && inputE.files) {
+      files = inputE.files;
+    } else {
+      return;
+    }
+    if (files.length <= 0) {
+      return false;
+    }
+    const fr = new FileReader();
+    fr.onload = function (e) {
+      console.log(e);
+      const result = JSON.parse(e?.target?.result as string);
+      console.log(result);
+      if (result && result.prompts) {
+        const prt: { key: number; value: string }[] = [];
+        setPromptSelectConfig(result.prompts);
+        let firstConfigSet = false;
+        Object.keys(result.prompts).forEach(function (key) {
+          if (
+            language == result.prompts[key].lang ||
+            result.prompts[key].lang == ''
+          ) {
+            if (!firstConfigSet) {
+              firstConfigSet = true;
+              setPromptSelectFirstConfig(parseInt(key));
+            }
+            const name = result.prompts[key].name;
+            prt.push({ key: parseInt(key), value: name });
+          }
+        });
+        setPromptSelectOptions(prt);
+      }
+      const formatted = JSON.stringify(result, null, 2);
+      console.log(formatted);
+    };
+    const fItem: Blob | null = files.item(0);
+    if (fItem) {
+      fr.readAsText(fItem);
+    }
+    return;
+  };
 
   return (
     <>
@@ -466,55 +531,125 @@ export default function SettingDialog() {
             <HeaderLanguageBlock id="language-dropdown-2" />
           </div>
         </div>
-        {promptSelectOptions.length > 0 ? (
-          <div
-            className="tooltip tooltip-bottom z-100"
-            data-tip={t('Header.tooltipSettings')}
-          >
-            <div className="dropdown dropdown-end dropdown-bottom">
-              <div tabIndex={0} role="button" className="btn m-1">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="size-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75"
-                  />
-                </svg>
-                Preset
-              </div>
-              <ul
-                tabIndex={0}
-                className="dropdown-content bg-base-300 rounded-box z-[1] w-52 p-2 shadow-2xl h-80 overflow-y-auto"
-              >
-                {[...promptSelectOptions].map((opt) => (
-                  <li key={opt.key}>
-                    <input
-                      type="radio"
-                      name="settings"
-                      className="theme-controller btn btn-sm btn-block btn-ghost justify-start"
-                      aria-label={opt.value}
-                      value={opt.value}
-                      checked={selectedConfig === opt.key}
-                      onChange={(e) =>
-                        e.target.checked && selectPrompt(opt.key)
-                      }
-                      onClick={() => {
-                        closeDropDownMenu('');
-                      }}
-                    />
-                  </li>
-                ))}
-              </ul>
-            </div>
+        <div className="inline">
+          <div className="px-4 mt-4 flex">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              className="size-5"
+            >
+              <path d="M10 3.75a2 2 0 1 0-4 0 2 2 0 0 0 4 0ZM17.25 4.5a.75.75 0 0 0 0-1.5h-5.5a.75.75 0 0 0 0 1.5h5.5ZM5 3.75a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1 0-1.5h1.5a.75.75 0 0 1 .75.75ZM4.25 17a.75.75 0 0 0 0-1.5h-1.5a.75.75 0 0 0 0 1.5h1.5ZM17.25 17a.75.75 0 0 0 0-1.5h-5.5a.75.75 0 0 0 0 1.5h5.5ZM9 10a.75.75 0 0 1-.75.75h-5.5a.75.75 0 0 1 0-1.5h5.5A.75.75 0 0 1 9 10ZM17.25 10.75a.75.75 0 0 0 0-1.5h-1.5a.75.75 0 0 0 0 1.5h1.5ZM14 10a2 2 0 1 0-4 0 2 2 0 0 0 4 0ZM10 16.25a2 2 0 1 0-4 0 2 2 0 0 0 4 0Z" />
+            </svg>
+            <div>{t('Settings.presetLabel')}</div>
           </div>
-        ) : null}
+          <div className="flex justify-end">
+            <div
+              className="tooltip tooltip-bottom z-100"
+              data-tip={t('Settings.loadPresetBtn')}
+              onClick={() => {
+                document?.getElementById('configJsonInput')?.click();
+              }}
+            >
+              <input
+                id="configJsonInput"
+                className="hidden"
+                type="file"
+                onChange={() => {
+                  onFileChange();
+                }}
+                accept=".json"
+              />
+              <div className="dropdown dropdown-end dropdown-bottom">
+                <div tabIndex={0} role="button" className="btn m-1">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="size-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15M9 12l3 3m0 0 3-3m-3 3V2.25"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div
+              className="tooltip tooltip-bottom z-100"
+              data-tip={t('Settings.savePresetBtn')}
+              onClick={downloadConfigs}
+            >
+              <div className="dropdown dropdown-end dropdown-bottom">
+                <div tabIndex={0} role="button" className="btn m-1">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width={24}
+                    height={24}
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M20 7.423v10.962q0 .69-.462 1.153T18.384 20H5.616q-.691 0-1.153-.462T4 18.384V5.616q0-.691.463-1.153T5.616 4h10.961zm-1 .427L16.15 5H5.616q-.27 0-.443.173T5 5.616v12.769q0 .269.173.442t.443.173h12.769q.269 0 .442-.173t.173-.443zm-7 8.688q.827 0 1.414-.586T14 14.538t-.587-1.413T12 12.539t-1.413.586T10 14.538t.587 1.414t1.413.586M6.77 9.77h7.422v-3H6.77zM5 7.85V19V5z"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+            </div>
+            {promptSelectOptions.length > 0 ? (
+              <div
+                className="tooltip tooltip-bottom z-100"
+                data-tip={t('Settings.tooltipPresets')}
+              >
+                <div className="dropdown dropdown-end dropdown-bottom">
+                  <div tabIndex={0} role="button" className="btn m-1">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="size-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75"
+                      />
+                    </svg>
+                  </div>
+                  <ul
+                    tabIndex={0}
+                    className="dropdown-content bg-base-300 rounded-box z-[1] w-52 p-2 shadow-2xl h-80 overflow-y-auto"
+                  >
+                    {[...promptSelectOptions].map((opt) => (
+                      <li key={opt.key}>
+                        <input
+                          type="radio"
+                          name="settings"
+                          className="theme-controller btn btn-sm btn-block btn-ghost justify-start"
+                          aria-label={opt.value}
+                          value={opt.value}
+                          checked={selectedConfig === opt.key}
+                          onChange={(e) =>
+                            e.target.checked && selectPrompt(opt.key)
+                          }
+                          onClick={() => {
+                            closeDropDownMenu('');
+                          }}
+                        />
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            ) : null}
+          </div>
+        </div>
         <div className="flex flex-col">
           {/* Right panel, showing setting fields */}
           <div className="grow px-4">
