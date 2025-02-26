@@ -1,5 +1,5 @@
 {
-  "prompts": [
+  "presets": [
     {
       "name": "Configuration example",
       "lang": "en",

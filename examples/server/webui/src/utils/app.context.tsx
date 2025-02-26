@@ -446,8 +446,8 @@ export const AppContextProvider = ({
           else return response.json();
         })
         .then((data) => {
-          if (data && data.prompts) {
-            setPromptSelectConfig(data.prompts);
+          if (data && data.presets) {
+            setPromptSelectConfig(data.presets);
           }
         })
         .catch((error) => {

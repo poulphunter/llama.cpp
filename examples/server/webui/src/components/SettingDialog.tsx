@@ -423,7 +423,7 @@ export default function SettingDialog() {
     }
   };
   const downloadConfigs = () => {
-    const configJson = JSON.stringify({ prompts: promptSelectConfig }, null, 2);
+    const configJson = JSON.stringify({ presets: promptSelectConfig }, null, 2);
     const blob = new Blob([configJson], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -452,8 +452,8 @@ export default function SettingDialog() {
     const fr = new FileReader();
     fr.onload = function (e) {
       const result = JSON.parse(e?.target?.result as string);
-      if (result && result.prompts) {
-        setPromptSelectConfig(result.prompts, () => {
+      if (result && result.presets) {
+        setPromptSelectConfig(result.presets, () => {
           resetSettings();
         });
       }
