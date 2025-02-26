@@ -3,7 +3,7 @@ import StorageUtils from '../utils/storage';
 import { useAppContext } from '../utils/app.context';
 import { classNames } from '../utils/misc';
 import daisyuiThemes from 'daisyui/src/theming/themes';
-import { THEMES, CONFIG_DEFAULT, isDev } from '../Config';
+import { THEMES } from '../Config';
 import { useTranslation } from 'react-i18next';
 import i18next from 'i18next';
 import { ConversationListButton } from './ConversationList.tsx';
@@ -80,16 +80,7 @@ export function HeaderThemeBlock({ id }: { id: string }) {
 
 export function HeaderLanguageBlock({ id }: { id: string }) {
   const { t } = useTranslation();
-  const {
-    closeDropDownMenu,
-    languageOptions,
-    setLanguage,
-    setPromptSelectOptions,
-    promptSelectConfig,
-    setPromptSelectFirstConfig,
-    resetSettings,
-    saveConfig,
-  } = useAppContext();
+  const { closeDropDownMenu, languageOptions, setLanguage } = useAppContext();
   {
     /* theme controller is copied from https://daisyui.com/components/theme-controller/ */
   }
@@ -126,37 +117,7 @@ export function HeaderLanguageBlock({ id }: { id: string }) {
                 aria-label={language}
                 value={language}
                 onChange={() => {
-                  // setLanguage(code);
-                  setLanguage(code, (n) => {
-                    const prt: { key: number; value: string }[] = [];
-                    if (promptSelectConfig) {
-                      let firstConfigSet = false;
-                      Object.keys(promptSelectConfig).forEach(function (key) {
-                        if (n == promptSelectConfig[parseInt(key)].lang) {
-                          if (!firstConfigSet) {
-                            firstConfigSet = true;
-                            setPromptSelectFirstConfig(parseInt(key));
-                            if (isDev)
-                              console.log(
-                                'Saving config',
-                                promptSelectConfig[parseInt(key)].config
-                              );
-                            saveConfig(CONFIG_DEFAULT);
-                            saveConfig(
-                              promptSelectConfig[parseInt(key)].config
-                            );
-                          }
-                          const name = promptSelectConfig[parseInt(key)].name;
-                          prt.push({ key: parseInt(key), value: name });
-                        }
-                      });
-                      if (!firstConfigSet) {
-                        saveConfig(CONFIG_DEFAULT);
-                      }
-                    }
-                    resetSettings();
-                    setPromptSelectOptions(prt);
-                  });
+                  setLanguage(code);
                   i18next.changeLanguage(code);
                 }}
                 onClick={() => {

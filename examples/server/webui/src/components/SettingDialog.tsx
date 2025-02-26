@@ -435,12 +435,7 @@ export default function SettingDialog() {
     URL.revokeObjectURL(url);
   };
 
-  const {
-    setPromptSelectConfig,
-    language,
-    setPromptSelectFirstConfig,
-    setPromptSelectOptions,
-  } = useAppContext();
+  const { setPromptSelectConfig, settingsSeed } = useAppContext();
   const onFileChange = () => {
     const inputE: HTMLInputElement = document?.getElementById(
       'configJsonInput'
@@ -456,30 +451,15 @@ export default function SettingDialog() {
     }
     const fr = new FileReader();
     fr.onload = function (e) {
-      console.log(e);
       const result = JSON.parse(e?.target?.result as string);
-      console.log(result);
       if (result && result.prompts) {
-        const prt: { key: number; value: string }[] = [];
-        setPromptSelectConfig(result.prompts);
-        let firstConfigSet = false;
-        Object.keys(result.prompts).forEach(function (key) {
-          if (
-            language == result.prompts[key].lang ||
-            result.prompts[key].lang == ''
-          ) {
-            if (!firstConfigSet) {
-              firstConfigSet = true;
-              setPromptSelectFirstConfig(parseInt(key));
-            }
-            const name = result.prompts[key].name;
-            prt.push({ key: parseInt(key), value: name });
-          }
+        setPromptSelectConfig(result.prompts, () => {
+          resetSettings();
         });
-        setPromptSelectOptions(prt);
       }
       // const formatted = JSON.stringify(result, null, 2);
-      console.log("JSON loaded !");
+      console.log('JSON loaded !');
+      resetSettings();
     };
     const fItem: Blob | null = files.item(0);
     if (fItem) {
@@ -489,77 +469,124 @@ export default function SettingDialog() {
   };
 
   return (
-    <>
-      <div className="h-screen overflow-y-auto overflow-x-clip flex flex-col bg-base-200 py-4 px-4">
-        <div className="flex flex-row items-center justify-between mt-4 absolute top-0 right-0 z-50">
-          <div
-            className="tooltip tooltip-bottom z-100"
-            data-tip={t('Settings.CloseBtn')}
-            onClick={() => {
-              const elem = document.getElementById('settingBlock');
-              const elem2 = document.getElementById('mainBlock');
-              if (elem && elem2) {
-                elem.style.display = 'none';
-                elem2.style.display = 'block';
-              }
-            }}
-          >
-            <button className="btn">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="size-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                />
-              </svg>
-            </button>
-          </div>
-        </div>
-        <div className="flex flex-row items-center justify-between mt-4 z-10">
-          <h2 className="font-bold ml-4">{t('Settings.Settings')}</h2>
-        </div>
-        <div className="text-right block lg:hidden">
-          <div className="">
-            <HeaderThemeBlock id="theme-dropdown-2" />
-            <HeaderLanguageBlock id="language-dropdown-2" />
-          </div>
-        </div>
-        <div className="inline">
-          <div className="px-4 mt-4 flex">
+    <div
+      key={settingsSeed}
+      className="h-screen overflow-y-auto overflow-x-clip flex flex-col bg-base-200 py-4 px-4"
+    >
+      <div className="flex flex-row items-center justify-between mt-4 absolute top-0 right-0 z-50">
+        <div
+          className="tooltip tooltip-bottom z-100"
+          data-tip={t('Settings.CloseBtn')}
+          onClick={() => {
+            const elem = document.getElementById('settingBlock');
+            const elem2 = document.getElementById('mainBlock');
+            if (elem && elem2) {
+              elem.style.display = 'none';
+              elem2.style.display = 'block';
+            }
+          }}
+        >
+          <button className="btn">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              className="size-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="size-6"
             >
-              <path d="M10 3.75a2 2 0 1 0-4 0 2 2 0 0 0 4 0ZM17.25 4.5a.75.75 0 0 0 0-1.5h-5.5a.75.75 0 0 0 0 1.5h5.5ZM5 3.75a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1 0-1.5h1.5a.75.75 0 0 1 .75.75ZM4.25 17a.75.75 0 0 0 0-1.5h-1.5a.75.75 0 0 0 0 1.5h1.5ZM17.25 17a.75.75 0 0 0 0-1.5h-5.5a.75.75 0 0 0 0 1.5h5.5ZM9 10a.75.75 0 0 1-.75.75h-5.5a.75.75 0 0 1 0-1.5h5.5A.75.75 0 0 1 9 10ZM17.25 10.75a.75.75 0 0 0 0-1.5h-1.5a.75.75 0 0 0 0 1.5h1.5ZM14 10a2 2 0 1 0-4 0 2 2 0 0 0 4 0ZM10 16.25a2 2 0 1 0-4 0 2 2 0 0 0 4 0Z" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+              />
             </svg>
-            <div>{t('Settings.presetLabel')}</div>
+          </button>
+        </div>
+      </div>
+      <div className="flex flex-row items-center justify-between mt-4 z-10">
+        <h2 className="font-bold ml-4">{t('Settings.Settings')}</h2>
+      </div>
+      <div className="text-right block lg:hidden">
+        <div className="">
+          <HeaderThemeBlock id="theme-dropdown-2" />
+          <HeaderLanguageBlock id="language-dropdown-2" />
+        </div>
+      </div>
+      <div className="inline">
+        <div className="px-4 mt-4 flex">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            className="size-5"
+          >
+            <path d="M10 3.75a2 2 0 1 0-4 0 2 2 0 0 0 4 0ZM17.25 4.5a.75.75 0 0 0 0-1.5h-5.5a.75.75 0 0 0 0 1.5h5.5ZM5 3.75a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1 0-1.5h1.5a.75.75 0 0 1 .75.75ZM4.25 17a.75.75 0 0 0 0-1.5h-1.5a.75.75 0 0 0 0 1.5h1.5ZM17.25 17a.75.75 0 0 0 0-1.5h-5.5a.75.75 0 0 0 0 1.5h5.5ZM9 10a.75.75 0 0 1-.75.75h-5.5a.75.75 0 0 1 0-1.5h5.5A.75.75 0 0 1 9 10ZM17.25 10.75a.75.75 0 0 0 0-1.5h-1.5a.75.75 0 0 0 0 1.5h1.5ZM14 10a2 2 0 1 0-4 0 2 2 0 0 0 4 0ZM10 16.25a2 2 0 1 0-4 0 2 2 0 0 0 4 0Z" />
+          </svg>
+          <div>{t('Settings.presetLabel')}</div>
+        </div>
+        <div className="flex justify-end">
+          <div
+            className="tooltip tooltip-bottom z-100"
+            data-tip={t('Settings.loadPresetBtn')}
+            onClick={() => {
+              document?.getElementById('configJsonInput')?.click();
+            }}
+          >
+            <input
+              id="configJsonInput"
+              className="hidden"
+              type="file"
+              onChange={() => {
+                onFileChange();
+              }}
+              accept=".json"
+            />
+            <div className="dropdown dropdown-end dropdown-bottom">
+              <div tabIndex={0} role="button" className="btn m-1">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="size-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15M9 12l3 3m0 0 3-3m-3 3V2.25"
+                  />
+                </svg>
+              </div>
+            </div>
           </div>
-          <div className="flex justify-end">
+          <div
+            className="tooltip tooltip-bottom z-100"
+            data-tip={t('Settings.savePresetBtn')}
+            onClick={downloadConfigs}
+          >
+            <div className="dropdown dropdown-end dropdown-bottom">
+              <div tabIndex={0} role="button" className="btn m-1">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width={24}
+                  height={24}
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    fill="currentColor"
+                    d="M20 7.423v10.962q0 .69-.462 1.153T18.384 20H5.616q-.691 0-1.153-.462T4 18.384V5.616q0-.691.463-1.153T5.616 4h10.961zm-1 .427L16.15 5H5.616q-.27 0-.443.173T5 5.616v12.769q0 .269.173.442t.443.173h12.769q.269 0 .442-.173t.173-.443zm-7 8.688q.827 0 1.414-.586T14 14.538t-.587-1.413T12 12.539t-1.413.586T10 14.538t.587 1.414t1.413.586M6.77 9.77h7.422v-3H6.77zM5 7.85V19V5z"
+                  ></path>
+                </svg>
+              </div>
+            </div>
+          </div>
+          {promptSelectOptions.length > 0 ? (
             <div
               className="tooltip tooltip-bottom z-100"
-              data-tip={t('Settings.loadPresetBtn')}
-              onClick={() => {
-                document?.getElementById('configJsonInput')?.click();
-              }}
+              data-tip={t('Settings.tooltipPresets')}
             >
-              <input
-                id="configJsonInput"
-                className="hidden"
-                type="file"
-                onChange={() => {
-                  onFileChange();
-                }}
-                accept=".json"
-              />
               <div className="dropdown dropdown-end dropdown-bottom">
                 <div tabIndex={0} role="button" className="btn m-1">
                   <svg
@@ -573,190 +600,144 @@ export default function SettingDialog() {
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15M9 12l3 3m0 0 3-3m-3 3V2.25"
+                      d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75"
                     />
                   </svg>
                 </div>
+                <ul
+                  tabIndex={0}
+                  className="dropdown-content bg-base-300 rounded-box z-[1] w-52 p-2 shadow-2xl h-80 overflow-y-auto"
+                >
+                  {[...promptSelectOptions].map((opt) => (
+                    <li key={opt.key}>
+                      <input
+                        type="radio"
+                        name="settings"
+                        className="theme-controller btn btn-sm btn-block btn-ghost justify-start"
+                        aria-label={opt.value}
+                        value={opt.value}
+                        checked={selectedConfig === opt.key}
+                        onChange={(e) =>
+                          e.target.checked && selectPrompt(opt.key)
+                        }
+                        onClick={() => {
+                          closeDropDownMenu('');
+                        }}
+                      />
+                    </li>
+                  ))}
+                </ul>
               </div>
             </div>
-            <div
-              className="tooltip tooltip-bottom z-100"
-              data-tip={t('Settings.savePresetBtn')}
-              onClick={downloadConfigs}
-            >
-              <div className="dropdown dropdown-end dropdown-bottom">
-                <div tabIndex={0} role="button" className="btn m-1">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width={24}
-                    height={24}
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      fill="currentColor"
-                      d="M20 7.423v10.962q0 .69-.462 1.153T18.384 20H5.616q-.691 0-1.153-.462T4 18.384V5.616q0-.691.463-1.153T5.616 4h10.961zm-1 .427L16.15 5H5.616q-.27 0-.443.173T5 5.616v12.769q0 .269.173.442t.443.173h12.769q.269 0 .442-.173t.173-.443zm-7 8.688q.827 0 1.414-.586T14 14.538t-.587-1.413T12 12.539t-1.413.586T10 14.538t.587 1.414t1.413.586M6.77 9.77h7.422v-3H6.77zM5 7.85V19V5z"
-                    ></path>
-                  </svg>
-                </div>
-              </div>
-            </div>
-            {promptSelectOptions.length > 0 ? (
-              <div
-                className="tooltip tooltip-bottom z-100"
-                data-tip={t('Settings.tooltipPresets')}
-              >
-                <div className="dropdown dropdown-end dropdown-bottom">
-                  <div tabIndex={0} role="button" className="btn m-1">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="size-6"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75"
-                      />
-                    </svg>
-                  </div>
-                  <ul
-                    tabIndex={0}
-                    className="dropdown-content bg-base-300 rounded-box z-[1] w-52 p-2 shadow-2xl h-80 overflow-y-auto"
-                  >
-                    {[...promptSelectOptions].map((opt) => (
-                      <li key={opt.key}>
-                        <input
-                          type="radio"
-                          name="settings"
-                          className="theme-controller btn btn-sm btn-block btn-ghost justify-start"
-                          aria-label={opt.value}
-                          value={opt.value}
-                          checked={selectedConfig === opt.key}
-                          onChange={(e) =>
-                            e.target.checked && selectPrompt(opt.key)
-                          }
-                          onClick={() => {
-                            closeDropDownMenu('');
-                          }}
-                        />
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            ) : null}
-          </div>
-        </div>
-        <div className="flex flex-col">
-          {/* Right panel, showing setting fields */}
-          <div className="grow px-4">
-            {SETTING_SECTIONS.map((section, idx) => (
-              <div key={idx}>
-                <div className="pt-3 pb-1">{section.title}</div>
-                {section.fields.map((field, sIdx) => {
-                  const key = `${idx}-${sIdx}-${field.key}-${section.title}`;
-                  if (field.type === SettingInputType.SHORT_INPUT) {
-                    return (
-                      <SettingsModalShortInput
-                        key={key}
-                        configKey={field.key}
-                        value={localConfig[field.key]}
-                        onChange={onChange(field.key)}
-                        label={field.label as string}
-                      />
-                    );
-                  } else if (field.type === SettingInputType.LONG_INPUT) {
-                    return (
-                      <SettingsModalLongInput
-                        key={key}
-                        configKey={field.key}
-                        value={localConfig[field.key].toString()}
-                        onChange={onChange(field.key)}
-                        label={field.label as string}
-                      />
-                    );
-                  } else if (field.type === SettingInputType.CHECKBOX) {
-                    return (
-                      <SettingsModalCheckbox
-                        key={key}
-                        configKey={field.key}
-                        value={!!localConfig[field.key]}
-                        onChange={onChange(field.key)}
-                        label={field.label as string}
-                      />
-                    );
-                  } else if (field.type === SettingInputType.CUSTOM) {
-                    return (
-                      <div key={key} className="mb-2">
-                        {typeof field.component === 'string'
-                          ? field.component
-                          : field.component({
-                              value: localConfig[field.key],
-                              onChange: onChange(field.key),
-                            })}
-                      </div>
-                    );
-                  }
-                })}
-              </div>
-            ))}
-            <p className="opacity-40 mb-6 text-sm mt-8">
-              {t('Settings.savedLocal')}
-            </p>
-          </div>
-        </div>
-        <div className="flex flex-row items-center justify-between mt-4 sticky bottom-0 z-10">
-          <div
-            className="tooltip tooltip-top z-100"
-            data-tip={t('Settings.resetBtn')}
-            onClick={() => {
-              resetConfig();
-            }}
-          >
-            <button className="btn">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="size-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3-3 3"
-                />
-              </svg>
-            </button>
-          </div>
-          <div
-            className="tooltip tooltip-top z-100"
-            data-tip={t('Settings.saveBtn')}
-            onClick={() => {
-              handleSave();
-            }}
-          >
-            <button className="btn btn-primary">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width={24}
-                height={24}
-                viewBox="0 0 24 24"
-              >
-                <path
-                  fill="currentColor"
-                  d="M20 7.423v10.962q0 .69-.462 1.153T18.384 20H5.616q-.691 0-1.153-.462T4 18.384V5.616q0-.691.463-1.153T5.616 4h10.961zm-1 .427L16.15 5H5.616q-.27 0-.443.173T5 5.616v12.769q0 .269.173.442t.443.173h12.769q.269 0 .442-.173t.173-.443zm-7 8.688q.827 0 1.414-.586T14 14.538t-.587-1.413T12 12.539t-1.413.586T10 14.538t.587 1.414t1.413.586M6.77 9.77h7.422v-3H6.77zM5 7.85V19V5z"
-                ></path>
-              </svg>
-            </button>
-          </div>
+          ) : null}
         </div>
       </div>
-    </>
+      <div className="flex flex-col">
+        {/* Right panel, showing setting fields */}
+        <div className="grow px-4">
+          {SETTING_SECTIONS.map((section, idx) => (
+            <div key={idx}>
+              <div className="pt-3 pb-1">{section.title}</div>
+              {section.fields.map((field, sIdx) => {
+                const key = `${idx}-${sIdx}-${field.key}-${section.title}`;
+                if (field.type === SettingInputType.SHORT_INPUT) {
+                  return (
+                    <SettingsModalShortInput
+                      key={key}
+                      configKey={field.key}
+                      value={localConfig[field.key]}
+                      onChange={onChange(field.key)}
+                      label={field.label as string}
+                    />
+                  );
+                } else if (field.type === SettingInputType.LONG_INPUT) {
+                  return (
+                    <SettingsModalLongInput
+                      key={key}
+                      configKey={field.key}
+                      value={localConfig[field.key].toString()}
+                      onChange={onChange(field.key)}
+                      label={field.label as string}
+                    />
+                  );
+                } else if (field.type === SettingInputType.CHECKBOX) {
+                  return (
+                    <SettingsModalCheckbox
+                      key={key}
+                      configKey={field.key}
+                      value={!!localConfig[field.key]}
+                      onChange={onChange(field.key)}
+                      label={field.label as string}
+                    />
+                  );
+                } else if (field.type === SettingInputType.CUSTOM) {
+                  return (
+                    <div key={key} className="mb-2">
+                      {typeof field.component === 'string'
+                        ? field.component
+                        : field.component({
+                            value: localConfig[field.key],
+                            onChange: onChange(field.key),
+                          })}
+                    </div>
+                  );
+                }
+              })}
+            </div>
+          ))}
+          <p className="opacity-40 mb-6 text-sm mt-8">
+            {t('Settings.savedLocal')}
+          </p>
+        </div>
+      </div>
+      <div className="flex flex-row items-center justify-between mt-4 sticky bottom-0 z-10">
+        <div
+          className="tooltip tooltip-top z-100"
+          data-tip={t('Settings.resetBtn')}
+          onClick={() => {
+            resetConfig();
+          }}
+        >
+          <button className="btn">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="size-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3-3 3"
+              />
+            </svg>
+          </button>
+        </div>
+        <div
+          className="tooltip tooltip-top z-100"
+          data-tip={t('Settings.saveBtn')}
+          onClick={() => {
+            handleSave();
+          }}
+        >
+          <button className="btn btn-primary">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width={24}
+              height={24}
+              viewBox="0 0 24 24"
+            >
+              <path
+                fill="currentColor"
+                d="M20 7.423v10.962q0 .69-.462 1.153T18.384 20H5.616q-.691 0-1.153-.462T4 18.384V5.616q0-.691.463-1.153T5.616 4h10.961zm-1 .427L16.15 5H5.616q-.27 0-.443.173T5 5.616v12.769q0 .269.173.442t.443.173h12.769q.269 0 .442-.173t.173-.443zm-7 8.688q.827 0 1.414-.586T14 14.538t-.587-1.413T12 12.539t-1.413.586T10 14.538t.587 1.414t1.413.586M6.77 9.77h7.422v-3H6.77zM5 7.85V19V5z"
+              ></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
 

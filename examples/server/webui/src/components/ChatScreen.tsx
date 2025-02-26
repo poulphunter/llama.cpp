@@ -80,6 +80,7 @@ export default function ChatScreen() {
     pendingMessages,
     canvasData,
     replaceMessageAndGenerate,
+    settingsSeed,
   } = useAppContext();
   const { t } = useTranslation();
   const [inputMsg, setInputMsg] = useState('');
@@ -246,29 +247,41 @@ export default function ChatScreen() {
           {viewingChat ? (
             ''
           ) : (
-            <div className="flex items-center text-center sm:text-left align-middle mx-auto">
-              {config.questionIdeas.length > 0 ? (
-                <div className="w-full text-center">
-                  <div className="">{t('ChatScreen.suggestions')}</div>
-                  <div className="grid grid-cols-1 sm:grid-cols-3">
+            <div
+              key={'viewingChat_' + settingsSeed}
+              id={'viewingChat_' + settingsSeed}
+              className="grid grid-col-1 items-center text-center sm:text-left align-middle mx-auto"
+            >
+              {config.questionIdeas?.length > 0 ? (
+                <>
+                  <div className="text-center">
+                    {t('ChatScreen.suggestions')}
+                  </div>
+                  <div className="text-center grid grid-col-1 items-center">
                     {[...config.questionIdeas].map((idea: string, index) => (
-                      <button
+                      <div
+                        className="card border-1 border-dotted bg-base-200 shadow-xl m-4 hover:bg-base-100 hover:border-base-200 hover:outline-offset-2 hover:outline-2"
                         key={index}
                         style={{ whiteSpace: 'pre-wrap' }}
-                        className="btn m-2 sd:m-4 sd:p-2"
                         onClick={() => {
                           setInputMsg(idea);
                           setAutomaticSend(true);
                         }}
                       >
-                        {idea}
-                      </button>
+                        <div className="card-body items-center text-center">
+                          {idea}
+                        </div>
+                      </div>
                     ))}
                   </div>
-                  <div className="">{t('ChatScreen.sendMsgStart')}</div>
-                </div>
+                  <div className="text-center pt-8">
+                    {t('ChatScreen.sendMsgStart')}
+                  </div>
+                </>
               ) : (
-                <div className="">{t('ChatScreen.sendMsgStart')}</div>
+                <div className="text-center pt-8">
+                  {t('ChatScreen.sendMsgStart')}
+                </div>
               )}
             </div>
           )}

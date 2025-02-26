@@ -61,15 +61,16 @@ interface AppContextValue {
   // config
   config: typeof CONFIG_DEFAULT;
   saveConfig: (config: typeof CONFIG_DEFAULT) => void;
-  showSettings: boolean;
   settingsSeed: number;
-  setShowSettings: (show: boolean) => void;
   resetSettings: () => void;
   closeDropDownMenu: (e: string) => void;
   setPromptSelectOptions: (e: { key: number; value: string }[]) => void;
   promptSelectOptions: { key: number; value: string }[];
   promptSelectConfig: typeof PROMPT_JSON | null;
-  setPromptSelectConfig: (e: typeof PROMPT_JSON | null) => void;
+  setPromptSelectConfig: (
+    value: React.SetStateAction<typeof PROMPT_JSON | null>,
+    callback?: (value?: React.SetStateAction<typeof PROMPT_JSON | null>) => void
+  ) => void;
   promptSelectFirstConfig: number;
   setPromptSelectFirstConfig: (e: number) => void;
   languageOptions: languageOption[];
@@ -117,7 +118,6 @@ export const AppContextProvider = ({
   >({});
   const [config, setConfig] = useState(StorageUtils.getConfig());
   const [canvasData, setCanvasData] = useState<CanvasData | null>(null);
-  const [showSettings, setShowSettings] = useState(false);
   const [settingsSeed, setSettingsSeed] = useState(1);
   const [promptSeed, setPromptSeed] = useState(42);
   const resetSettings = useCallback(() => {
@@ -432,46 +432,66 @@ export const AppContextProvider = ({
   const [promptSelectOptions, setPromptSelectOptions] = useState<
     { key: number; value: string }[]
   >([]);
-  const [promptSelectConfig, setPromptSelectConfig] = useState<
+  const [promptSelectConfig, setPromptSelectConfig] = useStateCallback<
     typeof PROMPT_JSON | null
   >(null);
   const [promptSelectFirstConfig, setPromptSelectFirstConfig] =
     useState<number>(-1);
 
   useEffect(() => {
-    fetch('/prompts.config.json')
-      .then((response) => response.json())
-      .then((data) => {
-        const prt: { key: number; value: string }[] = [];
-        if (data && data.prompts) {
-          setPromptSelectConfig(data.prompts);
-          let firstConfigSet = false;
-          Object.keys(data.prompts).forEach(function (key) {
-            if (
-              language == data.prompts[key].lang ||
-              data.prompts[key].lang == ''
-            ) {
-              if (!firstConfigSet) {
-                firstConfigSet = true;
-                setPromptSelectFirstConfig(parseInt(key));
-              }
-              const name = data.prompts[key].name;
-              prt.push({ key: parseInt(key), value: name });
-            }
-          });
-        }
-        setPromptSelectOptions(prt);
-      })
-      .catch((error) => {
-        if (isDev) {
-          console.log(error);
-        }
-      });
+    if (!promptSelectConfig) {
+      fetch('/prompts.config.json')
+        .then((response) => {
+          if (!response.ok) throw new Error(response.status.toString());
+          else return response.json();
+        })
+        .then((data) => {
+          if (data && data.prompts) {
+            setPromptSelectConfig(data.prompts);
+          }
+        })
+        .catch((error) => {
+          console.log('error: ' + error);
+        });
+    }
   }, [
     language,
     setPromptSelectConfig,
     setPromptSelectFirstConfig,
     setPromptSelectOptions,
+    promptSelectConfig,
+  ]);
+
+  useEffect(() => {
+    const prt: { key: number; value: string }[] = [];
+    if (promptSelectConfig) {
+      let firstConfigSet = false;
+      saveConfig(CONFIG_DEFAULT);
+      Object.keys(promptSelectConfig).forEach(function (key: string) {
+        if (
+          language == promptSelectConfig[parseInt(key)].lang ||
+          promptSelectConfig[parseInt(key)].lang == ''
+        ) {
+          if (!firstConfigSet) {
+            firstConfigSet = true;
+            setPromptSelectFirstConfig(parseInt(key));
+            saveConfig(promptSelectConfig[parseInt(key)].config);
+          }
+          const name = promptSelectConfig[parseInt(key)].name;
+          prt.push({ key: parseInt(key), value: name });
+        }
+      });
+      setPromptSelectConfig(promptSelectConfig, () => {
+        resetSettings();
+      });
+    }
+    setPromptSelectOptions(prt);
+  }, [
+    promptSelectConfig,
+    language,
+    resetSettings,
+    setPromptSelectConfig,
+    saveConfig,
   ]);
 
   const [selectedConfig, setSelectedConfig] = useState<number>(-1);
@@ -514,8 +534,6 @@ export const AppContextProvider = ({
         setCanvasData,
         config,
         saveConfig,
-        showSettings,
-        setShowSettings,
         settingsSeed,
         resetSettings,
         closeDropDownMenu,
